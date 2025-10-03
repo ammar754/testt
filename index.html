@@ -1,10 +1,10 @@
-# Creating the updated index.html with admin panel features (single file)
-html = r"""<!DOCTYPE html>
+# Writing updated index.html with hidden admin password and product edit/delete features
+html_updated = r"""<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Nebula Hardcore Store</title>
+  <title>Nebula Hardcore Store (Admin Improved)</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -51,12 +51,14 @@ html = r"""<!DOCTYPE html>
     .modal{position:fixed;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:200;}
     .modal-card{width:720px;max-width:95%;background:linear-gradient(180deg, rgba(11,11,13,0.98), rgba(18,18,20,0.98));border-radius:12px;padding:18px;border:1px solid rgba(138,43,226,0.08);color:var(--muted);}
     input,textarea,select{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:8px;color:var(--muted);width:100%;}
-    .admin-badge{background:rgba(138,43,226,0.12);color:var(--accent);padding:6px 10px;border-radius:8px;font-weight:700;}
+    .admin-badge{background:rgba(138,43,226,0.12);color:var(--accent);padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;}
     .orders-list{max-height:320px;overflow:auto;margin-top:8px;border-top:1px dashed rgba(255,255,255,0.04);padding-top:8px;}
     .order-item{padding:8px;border-radius:8px;margin-bottom:8px;background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;gap:8px;align-items:flex-start;}
     .small{font-size:13px;color:#bdbada;}
     .chip{background:rgba(0,0,0,0.4);padding:6px 8px;border-radius:999px;font-weight:700;}
     .hidden{display:none;}
+    .product-manage-list{max-height:220px;overflow:auto;border-top:1px dashed rgba(255,255,255,0.04);padding-top:8px;margin-top:8px;}
+    .product-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px;gap:8px;}
     footer{text-align:center;margin-top:18px;color:#aaa;padding:12px;}
     @media (max-width:900px){.hero{grid-template-columns:1fr;padding:12px}.modal-card{width:95%}}
   </style>
@@ -113,7 +115,7 @@ html = r"""<!DOCTYPE html>
 
       <div style="margin-top:12px; display:flex; gap:8px; flex-direction:column;">
         <label class="small">Minecraft Username</label>
-        <input id="mcName" placeholder="Contoh: ProGamer123">
+        <input id="mcName" placeholder="Contoh: ProGamer123" autocomplete="off">
       </div>
 
       <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
@@ -128,13 +130,13 @@ html = r"""<!DOCTYPE html>
     <div class="modal-card">
       <h3 style="margin-top:0">Admin Login</h3>
       <div style="display:grid;gap:8px;">
-        <input id="adminUser" placeholder="Username">
-        <input id="adminPass" placeholder="Password" type="password">
+        <input id="adminUser" placeholder="Username" autocomplete="off">
+        <input id="adminPass" placeholder="Password" type="password" autocomplete="new-password">
         <div style="display:flex;gap:8px;justify-content:flex-end;">
           <button class="ghost" onclick="closeLoginModal()">Batal</button>
           <button class="btn" onclick="doAdminLogin()">Login</button>
         </div>
-        <div class="small" style="margin-top:8px">Default admin: <strong>admin</strong> / <strong>nebula123</strong></div>
+        <div class="small" style="margin-top:8px">Default admin username: <strong>admin</strong> (password disembunyikan)</div>
       </div>
     </div>
   </div>
@@ -167,9 +169,11 @@ html = r"""<!DOCTYPE html>
             <select id="newCategory"><option value="ranks">ranks</option><option value="cosmetic">cosmetic</option><option value="keys">keys</option></select>
             <div style="display:flex;gap:8px;justify-content:flex-end;">
               <button class="ghost" onclick="resetNewProduct()">Reset</button>
-              <button class="btn" onclick="addProduct()">Tambah Produk</button>
+              <button class="btn" id="addProductBtn" onclick="addProduct()">Tambah Produk</button>
             </div>
             <div class="small">Tambah produk akan muncul di katalog untuk semua pengguna.</div>
+
+            <div class="product-manage-list" id="productManageList"></div>
           </div>
         </div>
       </div>
@@ -197,6 +201,7 @@ html = r"""<!DOCTYPE html>
     // State
     let activeCategory = 'all';
     let cart = JSON.parse(localStorage.getItem('nh_cart') || '[]');
+    let editingProductId = null; // for edit mode in manage products
 
     // Admin credentials (default)
     const ADMIN_USER = 'admin';
@@ -211,8 +216,9 @@ html = r"""<!DOCTYPE html>
     const cartCount = document.getElementById('cartCount');
     const cartText = document.getElementById('cartText');
     const adminStatus = document.getElementById('adminStatus');
+    const productManageList = document.getElementById('productManageList');
 
-    // Render functions
+    // Render functions (same as before)
     function uniqueCategories(){ const cats = new Set(products.map(p=>p.category)); return ['all', ...Array.from(cats)]; }
     function renderCategories(){ if(!categoriesEl) return; categoriesEl.innerHTML=''; uniqueCategories().forEach(c=>{ const btn=document.createElement('button'); btn.className='cat'+(c===activeCategory?' active':''); btn.textContent = c==='all' ? 'All' : c.charAt(0).toUpperCase()+c.slice(1); btn.onclick = ()=>filterCategory(c); categoriesEl.appendChild(btn); }) }
     function renderProducts(){ productGrid.innerHTML=''; const q = document.getElementById('q') ? document.getElementById('q').value.toLowerCase() : ''; products.filter(p=> (activeCategory==='all' || p.category===activeCategory) && (p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)) ).forEach(p=>{ const card=document.createElement('div'); card.className='card'; card.innerHTML = `
@@ -248,7 +254,7 @@ html = r"""<!DOCTYPE html>
       cart.forEach(c=>{ itemsText += `- ${c.title} (${formatRupiah(c.price)}) x${c.qty}\n`; itemsData.push({title:c.title, price:c.price, qty:c.qty}); total += c.price * c.qty; });
 
       const msg = `Bang saya mau beli rank dari Nebula Hardcore\nUsername: ${mcName}\n\nDaftar item:\n${itemsText}\nTotal: ${formatRupiah(total)}\nServer: play.nebulahc.my.id\nTerima kasih.`;
-      // Save order locally so admin bisa lihat
+      // Save order locally so admin can see
       const orders = JSON.parse(localStorage.getItem('nh_orders') || '[]');
       const order = { id: Date.now(), mcName, items: itemsData, total, status:'pending', created:new Date().toISOString() };
       orders.unshift(order);
@@ -260,7 +266,7 @@ html = r"""<!DOCTYPE html>
       const waNumber = '0089677559943';
       const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
       window.open(waUrl,'_blank');
-      // If admin logged in and admin panel open, refresh orders
+      // Refresh orders list if admin panel open
       renderOrdersList();
     }
 
@@ -282,7 +288,7 @@ html = r"""<!DOCTYPE html>
     function logoutAdmin(){ sessionStorage.removeItem('nh_admin'); document.getElementById('adminStatus').innerHTML=''; closeAdminPanel(); alert('Logout sukses.'); }
 
     // Admin panel controls
-    function openAdminPanel(){ if(sessionStorage.getItem('nh_admin')){ document.getElementById('adminPanel').classList.remove('hidden'); renderOrdersList(); } else { alert('Harus login sebagai admin.'); openLoginModal(); } }
+    function openAdminPanel(){ if(sessionStorage.getItem('nh_admin')){ document.getElementById('adminPanel').classList.remove('hidden'); renderOrdersList(); renderProductManageList(); } else { alert('Harus login sebagai admin.'); openLoginModal(); } }
     function closeAdminPanel(){ document.getElementById('adminPanel').classList.add('hidden'); }
 
     // Orders management
@@ -307,14 +313,11 @@ html = r"""<!DOCTYPE html>
       const orders = JSON.parse(localStorage.getItem('nh_orders') || '[]');
       const o = orders.find(x=>x.id===orderId);
       if(!o) return alert('Order tidak ditemukan');
-      // Generate LuckPerms commands per item (map product titles to rank nodes)
       let cmdText = `# Commands for ${o.mcName}\n`;
       o.items.forEach(it=>{
-        // Derive rank key from title; e.g. "Rank • Titan" -> "titan"
-        const rankKey = it.title.split('•')[1] ? it.title.split('•')[1].trim().toLowerCase().split(' ')[0] : it.title.replace(/\s+/g,'').toLowerCase();
-        cmdText += `lp user ${o.mcName} parent set ${rankKey}\n`;
+        const rankPart = it.title.split('•')[1] ? it.title.split('•')[1].trim().toLowerCase().split(' ')[0] : it.title.replace(/\s+/g,'').toLowerCase();
+        cmdText += `lp user ${o.mcName} parent set ${rankPart}\n`;
       });
-      // copy to clipboard
       navigator.clipboard.writeText(cmdText).then(()=>{ alert('Commands disalin ke clipboard. Paste di console RCON atau server.'); }).catch(()=>{ prompt('Copy commands (manual):', cmdText); });
     }
 
@@ -329,22 +332,73 @@ html = r"""<!DOCTYPE html>
       orders = orders.filter(x=>x.id!==orderId); localStorage.setItem('nh_orders', JSON.stringify(orders)); renderOrdersList();
     }
 
-    // Product management (admin)
+    // Product management (admin) with edit & delete
+    function renderProductManageList(){
+      productManageList.innerHTML = '';
+      products.forEach(p=>{
+        const div = document.createElement('div'); div.className='product-item';
+        div.innerHTML = `<div style="flex:1"><strong>${p.title}</strong><div class="small">${formatRupiah(p.price)} • ${p.category}</div></div>
+          <div style="display:flex;gap:8px;"><button class="ghost" onclick="editProduct(${p.id})">Edit</button><button class="ghost" onclick="removeProduct(${p.id})">Hapus</button></div>`;
+        productManageList.appendChild(div);
+      });
+    }
+
     function addProduct(){
       if(!sessionStorage.getItem('nh_admin')){ alert('Harus login admin.'); return; }
       const title = document.getElementById('newTitle').value.trim();
-      const price = parseInt(document.getElementById('newPrice').value);
+      const priceRaw = document.getElementById('newPrice').value.trim();
+      const price = parseInt(priceRaw);
       const img = document.getElementById('newImg').value.trim() || 'https://images.unsplash.com/photo-1605902711622-cfb43c44367e?auto=format&fit=crop&w=800&q=60';
       const category = document.getElementById('newCategory').value;
       if(!title || !price || isNaN(price)){ alert('Isi nama produk dan harga yang valid.'); return; }
-      const id = Date.now();
-      products.unshift({id,title,price,category,desc:title,img});
+
+      if(editingProductId){
+        // update existing product
+        const idx = products.findIndex(x=>x.id===editingProductId);
+        if(idx!==-1){
+          products[idx].title = title;
+          products[idx].price = price;
+          products[idx].img = img;
+          products[idx].category = category;
+          products[idx].desc = title;
+          alert('Produk diperbarui.');
+        }
+        editingProductId = null;
+        document.getElementById('addProductBtn').textContent = 'Tambah Produk';
+      } else {
+        const id = Date.now();
+        products.unshift({id,title,price,category,desc:title,img});
+        alert('Produk ditambahkan.');
+      }
+
       localStorage.setItem('nh_products', JSON.stringify(products));
-      renderProducts(); renderCategories();
-      document.getElementById('newTitle').value=''; document.getElementById('newPrice').value=''; document.getElementById('newImg').value='';
-      alert('Produk ditambahkan.');
+      renderProducts(); renderCategories(); renderProductManageList();
+      resetNewProduct();
     }
-    function resetNewProduct(){ document.getElementById('newTitle').value=''; document.getElementById('newPrice').value=''; document.getElementById('newImg').value=''; }
+
+    function editProduct(id){
+      if(!sessionStorage.getItem('nh_admin')){ alert('Harus login admin.'); return; }
+      const p = products.find(x=>x.id===id);
+      if(!p) return;
+      editingProductId = id;
+      document.getElementById('newTitle').value = p.title;
+      document.getElementById('newPrice').value = p.price;
+      document.getElementById('newImg').value = p.img;
+      document.getElementById('newCategory').value = p.category;
+      document.getElementById('addProductBtn').textContent = 'Simpan Perubahan';
+      // ensure admin panel shows
+      openAdminPanel();
+    }
+
+    function removeProduct(id){
+      if(!confirm('Hapus produk ini?')) return;
+      products = products.filter(x=>x.id!==id);
+      localStorage.setItem('nh_products', JSON.stringify(products));
+      renderProducts(); renderCategories(); renderProductManageList();
+      alert('Produk dihapus.');
+    }
+
+    function resetNewProduct(){ document.getElementById('newTitle').value=''; document.getElementById('newPrice').value=''; document.getElementById('newImg').value=''; document.getElementById('newCategory').value='ranks'; editingProductId = null; document.getElementById('addProductBtn').textContent = 'Tambah Produk'; }
 
     // Simple helpers
     function viewDetails(id){ const p = products.find(x=>x.id===id); alert(`${p.title}\n\n${p.desc}\nHarga: ${formatRupiah(p.price)}\nServer IP: play.nebulahc.my.id`); }
@@ -355,11 +409,10 @@ html = r"""<!DOCTYPE html>
     renderCategories();
     renderProducts();
     renderCartCount();
-    // show admin badge if logged in
     if(sessionStorage.getItem('nh_admin')) adminStatus.innerHTML = '<span class="admin-badge">Admin</span>';
+    // admin badge clickable to open panel
+    adminStatus.addEventListener('click', ()=>{ if(sessionStorage.getItem('nh_admin')) openAdminPanel(); });
 
-    // Expose openAdminPanel to topbar if admin is logged in
-    document.getElementById('adminStatus').addEventListener('click', ()=>{ if(sessionStorage.getItem('nh_admin')) openAdminPanel(); });
   </script>
 </body>
 </html>
@@ -367,6 +420,6 @@ html = r"""<!DOCTYPE html>
 
 path = "/mnt/data/index.html"
 with open(path, "w", encoding="utf-8") as f:
-    f.write(html)
+    f.write(html_updated)
 
-path
+"/mnt/data/index.html"
