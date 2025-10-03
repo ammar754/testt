@@ -1,104 +1,324 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>NEBULATIERS Rankings</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Roboto', sans-serif; background:#111; color:#eee; text-align:center; }
-    .hidden { display: none; }
-    .admin-panel {
-      margin: 20px auto;
-      max-width: 400px;
-      background: rgba(0,0,0,0.7);
-      padding: 20px;
-      border: 2px solid #8a2be2;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(138,43,226,0.5);
-    }
-    input, button {
-      padding: 10px;
-      margin: 8px;
-      width: 80%;
-      border-radius: 8px;
-      border: none;
-    }
-    button {
-      background: #8a2be2;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:hover { background: #6c1cb8; }
-    .rankings { margin-top: 20px; }
-    .rank-card {
-      background: #222;
-      margin: 10px auto;
-      padding: 15px;
-      border-radius: 10px;
-      max-width: 300px;
-      box-shadow: 0 0 10px rgba(138,43,226,0.3);
-    }
-    .rank-card h3 { margin: 0; color: #8a2be2; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEBULATIERS Rankings - Overall</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(155, 89, 182, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 10%, rgba(138, 43, 226, 0.1) 0%, transparent 40%);
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+            animation: fadeIn 1s ease-in;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(138, 43, 226, 0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(155, 89, 182, 0.3), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(138, 43, 226, 0.4), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(155, 89, 182, 0.4), transparent);
+            pointer-events: none;
+            animation: sparkle 3s linear infinite;
+            z-index: -1;
+        }
+        @keyframes sparkle {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-20px) rotate(360deg); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+            color: #8a2be2;
+            text-align: center;
+            padding: 50px 20px;
+            box-shadow: 0 4px 20px rgba(138, 43, 226, 0.3);
+            position: relative;
+            font-family: 'Orbitron', monospace;
+            overflow: hidden;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-conic-gradient(from 0deg, transparent, transparent 10px, rgba(138,43,226,0.05) 10px, rgba(138,43,226,0.05) 20px);
+            animation: rotate 25s linear infinite;
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        header h1 {
+            font-size: 3.5em;
+            margin: 0;
+            text-shadow: 0 0 20px #8a2be2, 0 0 40px #8a2be2, 0 0 60px #9b59b6;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 1;
+        }
+        header p {
+            font-size: 1.3em;
+            margin: 15px 0 0;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        nav {
+            background-color: rgba(26, 26, 26, 0.9);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #8a2be2;
+            backdrop-filter: blur(10px);
+        }
+        nav a {
+            color: #e0e0e0;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
+            padding: 12px 24px;
+            border: 2px solid transparent;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, transparent 0%, rgba(138, 43, 226, 0.05) 100%);
+        }
+        nav a:hover {
+            color: #8a2be2;
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.15) 0%, rgba(155, 89, 182, 0.15) 100%);
+            border-color: #8a2be2;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+            transform: scale(1.05) translateY(-2px);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(138, 43, 226, 0.25);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+        }
+        .server-info {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 25px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 15px;
+            border: 2px solid #8a2be2;
+            box-shadow: 0 4px 20px rgba(138, 43, 226, 0.2);
+        }
+        .server-info h2 {
+            color: #8a2be2;
+            margin: 0;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-shadow: 0 0 10px #8a2be2;
+        }
+        .server-info h2 i { font-size: 1.5em; }
+        .server-info p {
+            margin: 10px 0 0;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        .tier-section {
+            margin-bottom: 50px;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .tier-section h2 {
+            color: #8a2be2;
+            border-bottom: 3px solid #9b59b6;
+            padding-bottom: 15px;
+            font-family: 'Orbitron', monospace;
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 15px #8a2be2;
+        }
+        .rankings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        .rank-item {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .rank-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(138,43,226,0.2), transparent);
+            transition: left 0.6s;
+        }
+        .rank-item:hover::before { left: 100%; }
+        .rank-item:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 12px 35px rgba(138, 43, 226, 0.5);
+            border-color: #8a2be2;
+        }
+        .rank-item h3 {
+            margin: 0 0 12px;
+            color: #8a2be2;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.6em;
+            text-shadow: 0 0 5px #8a2be2;
+        }
+        .rank-item p {
+            margin: 8px 0;
+            opacity: 0.9;
+        }
+        .rank-icon {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px currentColor;
+        }
+        .tier-icon {
+            font-size: 1.2em;
+            margin-left: 5px;
+        }
+        .tier-ht { color: #8a2be2; text-shadow: 0 0 10px #8a2be2; }
+        .tier-lt { color: #9b59b6; text-shadow: 0 0 10px #9b59b6; }
+        .rank-gold { color: #ffd700; text-shadow: 0 0 15px #ffd700; }
+        .rank-silver { color: #c0c0c0; text-shadow: 0 0 15px #c0c0c0; }
+        .rank-bronze { color: #cd7f32; text-shadow: 0 0 15px #cd7f32; }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(26, 26, 26, 0.9);
+            color: #e0e0e0;
+            margin-top: 30px;
+            border-top: 3px solid #8a2be2;
+            font-family: 'Roboto', sans-serif;
+        }
+        .placeholder-note {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(155, 89, 182, 0.15);
+            border-radius: 10px;
+            border: 1px solid #9b59b6;
+            opacity: 0.9;
+        }
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.5em; }
+            nav a { margin: 5px; padding: 10px 18px; font-size: 1em; }
+            .rankings { grid-template-columns: 1fr; gap: 15px; }
+            .container { padding: 20px; margin: 15px; }
+        }
+    </style>
 </head>
 <body>
-  <h1>🌐 NEBULATIERS Rankings</h1>
-  <p>Leaderboard PvP Players</p>
+    <header>
+        <h1><i class="fas fa-star"></i> NEBULATIERS <i class="fas fa-star"></i></h1>
+        <p>PvP Rankings & Player Tiers</p>
+    </header>
 
-  <!-- Ranking list -->
-  <div id="ranking" class="rankings"></div>
+    <nav>
+        <a href="#" onclick="showCategory('overall')"><i class="fas fa-trophy"></i> Overall</a>
+        <a href="#" onclick="showCategory('ltms')"><i class="fas fa-gamepad"></i> LTMs</a>
+        <a href="#" onclick="showCategory('vanilla')"><i class="fas fa-cube"></i> Vanilla</a>
+        <a href="#" onclick="showCategory('uhc')"><i class="fas fa-skull"></i> UHC</a>
+        <a href="#" onclick="showCategory('pot')"><i class="fas fa-flask"></i> Pot</a>
+        <a href="#" onclick="showCategory('neth')"><i class="fas fa-fire"></i> Neth</a>
+        <a href="#" onclick="showCategory('ops')"><i class="fas fa-bolt"></i> OPS</a>
+        <a href="#" onclick="showCategory('mp')"><i class="fas fa-users"></i> MP</a>
+        <a href="#" onclick="showCategory('sword')"><i class="fas fa-sword"></i> Sword</a>
+        <a href="#" onclick="showCategory('axe')"><i class="fas fa-axe"></i> Axe</a>
+        <a href="#" onclick="showCategory('mace')"><i class="fas fa-hammer"></i> Mace</a>
+    </nav>
 
-  <!-- Admin panel (hidden kalau bukan IP admin) -->
-  <div id="adminPanel" class="admin-panel hidden">
-    <h2>🔧 Admin Panel</h2>
-    <input type="text" id="playerName" placeholder="Nama Player">
-    <input type="text" id="playerTier" placeholder="Tier (HT / LT)">
-    <button onclick="addPlayer()">Tambah Player</button>
-  </div>
+    <div class="container">
+        <div class="server-info">
+            <h2><i class="fas fa-server"></i> Server IP: play.nebulahc.my.id</h2>
+            <p>#PlayerRegionTiers | #PlayerRegion</p>
+        </div>
 
-  <script>
-    const allowedIP = "103.156.161.210";
-    const ranking = document.getElementById("ranking");
-    const adminPanel = document.getElementById("adminPanel");
+        <div id="content">
+            <!-- Konten akan dimuat di sini berdasarkan kategori -->
+            <div class="tier-section" id="overall">
+                <h2><i class="fas fa-chart-line"></i> Overall Rankings</h2>
+                <div class="rankings">
+                    <div class="rank-item">
+                        <div class="rank-icon"><i class="fas fa-medal rank-gold"></i></div>
+                        <h3 class="rank-gold">1. ProGamer123</h3>
+                        <p>Tier: <span class="tier-ht"><i class="fas fa-crown tier-icon"></i> HT 5</span></p>
+                    </div>
+                    <div class="rank-item">
+                        <div class="rank-icon"><i class="fas fa-medal rank-silver"></i></div>
+                        <h3 class="rank-silver">2. SwordMaster</h3>
+                        <p>Tier: <span class="tier-ht"><i class="fas fa-crown tier-icon"></i> HT 4</span></p>
+                    </div>
+                    <div class="rank-item">
+                        <div class="rank-icon"><i class="fas fa-medal rank-bronze"></i></div>
+                        <h3 class="rank-bronze">3. BlockBreaker</h3>
+                        <p>Tier: <span class="tier-ht"><i class="fas fa-crown tier-icon"></i> HT 3</span></p>
+                    </div>
+                    <div class="rank-item">
+                        <div class="rank-icon"><i class="fas fa-user"></i></div>
+                        <h3>4. PvPNoob</h3>
+                        <p>Tier: <span class="tier-lt"><i class="fas fa-star tier-icon"></i> LT 1</span></p>
+                    </div>
+                    <!-- Tambahkan lebih banyak cards sesuai data nyata -->
+                </div>
+                <div class="placeholder-note">
+                    <p>Data placeholder (LT paling rendah). <i class="fas fa-plug"></i> Hubungkan dengan play.nebulahc.my.id untuk stats real-time!</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    let players = [
-      { name: "ProGamer123", tier: "HT 5" },
-      { name: "SwordMaster", tier: "HT 4" }
-    ];
+    <footer>
+        <p>&copy; 2025 NEBULATIERS. All Rights Reserved. | <i class="fas fa-globe"></i> Join the PvP Community!</p>
+    </footer>
 
-    function renderRanking() {
-      ranking.innerHTML = "";
-      players.forEach((p, i) => {
-        ranking.innerHTML += `
-          <div class="rank-card">
-            <h3>${i+1}. ${p.name}</h3>
-            <p>Tier: ${p.tier}</p>
-          </div>
-        `;
-      });
-    }
-
-    function addPlayer() {
-      const name = document.getElementById("playerName").value;
-      const tier = document.getElementById("playerTier").value;
-      if(name && tier) {
-        players.push({ name, tier });
-        renderRanking();
-      }
-    }
-
-    // Cek IP user via API
-    fetch("https://api.ipify.org?format=json")
-      .then(res => res.json())
-      .then(data => {
-        console.log("IP kamu:", data.ip);
-        if(data.ip === allowedIP) {
-          adminPanel.classList.remove("hidden");
-        }
-      });
-
-    renderRanking();
-  </script>
-</body>
-</html>
+    <script>
+        function showCategory(category) {
+            // Data placeholder untuk setiap kategori (LT paling rendah, HT tertinggi - bisa diganti dengan API)
+            const sampleData = [
+                { rank: 1, player: 'MarOnHere', tier: 'HT 5', tierType: 'ht', icon: 'fas fa-medal' },
+               
