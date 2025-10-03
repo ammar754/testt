@@ -607,4 +607,96 @@ function renderProductManage(){
     const div = document.createElement('div');
     div.className='list-item';
     div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
-      <div><b>${escapeHtml(p.title)}</b><div class="small" style="margin-top:6px">${formatRp(p.price)}</div
+      <div><b>${escapeHtml(p.title)}</b><div class="small" style="margin-top:6px">${formatRp(p.price)}</div></div>
+      <div style="display:flex;gap:8px">
+        <button class="small-btn" onclick="editProduct(${p.id})">Edit</button>
+        <button class="small-btn" onclick="removeProduct(${p.id})">Hapus</button>
+      </div>
+    </div>`;
+    el.appendChild(div);
+  });
+}
+
+function saveProduct(){
+  const title = (document.getElementById('newTitle')||{}).value.trim();
+  const price = parseInt((document.getElementById('newPrice')||{}).value);
+  const img = (document.getElementById('newImg')||{}).value.trim();
+  if(!title || isNaN(price)){ alert('Nama & harga diperlukan'); return; }
+  if(editingProductId){
+    const idx = products.findIndex(x=>x.id === editingProductId);
+    if(idx !== -1){
+      products[idx].title = title;
+      products[idx].price = price;
+      products[idx].img = img;
+      alert('Produk diperbarui');
+    }
+    editingProductId = null;
+    document.getElementById('saveProductBtn').innerText = 'Tambah / Simpan';
+  } else {
+    const id = Date.now();
+    products.unshift({ id, title, price, category:'ranks', desc:title, img });
+    alert('Produk ditambahkan');
+  }
+  document.getElementById('newTitle').value=''; document.getElementById('newPrice').value=''; document.getElementById('newImg').value='';
+  saveAll(); renderProducts(); renderProductManage();
+}
+function editProduct(id){
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  editingProductId = id;
+  document.getElementById('newTitle').value = p.title;
+  document.getElementById('newPrice').value = p.price;
+  document.getElementById('newImg').value = p.img || '';
+  document.getElementById('saveProductBtn').innerText = 'Simpan Perubahan';
+  // ensure admin panel open
+  document.getElementById('adminPanelModal').style.display='flex';
+}
+function removeProduct(id){
+  if(!confirm('Hapus produk?')) return;
+  products = products.filter(x=>x.id!==id);
+  saveAll(); renderProducts(); renderProductManage();
+  alert('Produk dihapus');
+}
+function resetNewProduct(){
+  editingProductId = null;
+  document.getElementById('newTitle').value='';
+  document.getElementById('newPrice').value='';
+  document.getElementById('newImg').value='';
+  document.getElementById('saveProductBtn').innerText = 'Tambah / Simpan';
+}
+
+/* admin tickets list */
+function renderAdminTickets(){
+  const el = document.getElementById('ticketsList');
+  el.innerHTML = '';
+  tickets.forEach((t,i)=>{
+    const div = document.createElement('div');
+    div.className='list-item';
+    const chatPreview = (t.chat||[]).slice(-1).map(c=>escapeHtml(c.msg)).join(' ');
+    div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+      <div><b>${escapeHtml(t.user)}</b><div style="font-size:13px;color:#bdbada">${escapeHtml(chatPreview)}</div></div>
+      <div style="display:flex;gap:8px"><button class="small-btn" onclick="openTicketThread(${i})">Open</button><button class="small-btn" onclick="closeTicketAdmin(${i})">Close</button></div>
+    </div>`;
+    el.appendChild(div);
+  });
+}
+
+/* -------------------------
+   Init render
+   ------------------------- */
+renderProducts();
+renderCartCount();
+renderOrders();
+renderTickets();
+renderAdminTickets();
+renderProductManage();
+
+/* utility to scroll to catalog */
+function scrollToSection(id){
+  const el = document.getElementById('catalog');
+  if(el) el.scrollIntoView({behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>
