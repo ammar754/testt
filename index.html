@@ -3,140 +3,101 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Nebula Hardcore Store</title>
+<title>Nebula Hardcore — Store (Client-only)</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
   :root{
-    --bg:#0b0b0d;
-    --panel:#0f1013;
-    --muted:#cfcfe0;
+    --bg1:#07050a;
+    --bg2:#0f0f14;
+    --muted:#dbe0ff;
     --accent1:#8a2be2;
-    --accent2:#9b59b6;
+    --accent2:#3ac7ff;
+    --panel: rgba(255,255,255,0.02);
     --glass: rgba(255,255,255,0.03);
-    --neon: rgba(138,43,226,0.12);
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
-    margin:0;
-    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-    background:linear-gradient(180deg,var(--bg),#0b0b0f);
-    color:var(--muted);
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    overflow:auto;
+    margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    background:linear-gradient(180deg,var(--bg1),var(--bg2));
+    color:var(--muted);-webkit-font-smoothing:antialiased;
   }
 
-  /* Header */
+  /* Topbar */
   .topbar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    padding:18px 28px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));
-    border-bottom:1px solid rgba(255,255,255,0.02);
-    position:sticky;
-    top:0;
-    z-index:90;
-    backdrop-filter: blur(6px);
+    display:flex;align-items:center;justify-content:space-between;padding:16px 24px;
+    border-bottom:1px solid rgba(255,255,255,0.02);backdrop-filter:blur(6px);
   }
-  .brand{
-    display:flex; align-items:center; gap:12px;
-  }
-  .logo{
-    width:52px; height:52px; border-radius:12px;
-    background:linear-gradient(135deg,var(--accent1),var(--accent2));
-    display:grid; place-items:center; color:white; font-family:Orbitron;
-    box-shadow:0 8px 30px rgba(138,43,226,0.18);
-    font-weight:700;
-  }
-  .brand .title{font-family:Orbitron;font-size:18px;color:#fff}
-  .nav-actions{display:flex;gap:10px;align-items:center}
-  .ghost{
-    background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer;
-  }
-  .primary{
-    background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#fff;padding:9px 14px;border-radius:12px;border:none;cursor:pointer;font-weight:700;
-    box-shadow:0 8px 26px rgba(138,43,226,0.12);
-  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:grid;place-items:center;font-family:Orbitron;color:#fff}
+  .brand .title{font-family:Orbitron;font-weight:600;font-size:18px}
+  .nav{display:flex;align-items:center;gap:12px}
+  .btn{padding:8px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+  .btn-primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#fff;box-shadow:0 8px 30px rgba(138,43,226,0.12)}
+
+  /* Container */
+  .container{max-width:1200px;margin:20px auto;padding:0 18px}
 
   /* Hero */
-  .container{max-width:1200px;margin:22px auto;padding:0 18px}
-  .hero{
-    display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start;margin-bottom:20px;
-  }
-  .hero-main{
-    padding:24px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid rgba(255,255,255,0.02);
-  }
-  .hero-main h1{font-family:Orbitron;color:#fff;margin:0 0 8px}
-  .hero-main p{margin:0;color:#cfcfe0;opacity:.9}
-  .hero-side{padding:20px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px solid rgba(255,255,255,0.02)}
-  .hero-side h4{margin-top:0;color:#fff}
+  .hero{display:grid;grid-template-columns:1fr 360px;gap:20px;margin-bottom:18px}
+  .hero-left{background:var(--panel);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+  .hero-left h1{margin:0;font-family:Orbitron;color:#fff}
+  .hero-left p{opacity:.9;margin-top:8px}
+  .hero-right{background:var(--panel);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
 
   /* Catalog */
-  .section-title{font-size:22px;margin:16px 0 10px;color:#e7e4ff}
-  .catalog{
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap:18px;
-  }
+  .catalog-header{display:flex;justify-content:space-between;align-items:center;margin:6px 0 12px}
+  .search{display:flex;gap:8px;align-items:center}
+  .search input{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);outline:none;width:260px}
+  .catalog{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
 
-  .product{
+  .card{
     background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));
-    border-radius:12px;padding:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.02);position:relative;
-    transition:transform .2s, box-shadow .2s;
+    border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.02);transition:transform .18s,box-shadow .18s;overflow:hidden;
   }
-  .product:hover{transform:translateY(-8px);box-shadow:0 18px 50px rgba(0,0,0,0.6)}
-  .thumb{height:140px;border-radius:10px;background:linear-gradient(135deg, rgba(123,44,255,0.06), rgba(58,199,255,0.03));display:flex;align-items:center;justify-content:center;margin-bottom:12px}
-  .p-title{font-weight:700;margin:0 0 6px;color:#fff}
-  .p-desc{font-size:13px;color:#bdbada;margin:0 0 12px}
-  .p-meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .p-price{font-family:Orbitron;font-weight:700;color:#fff}
+  .card:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+  .thumb{height:140px;border-radius:10px;background:linear-gradient(135deg, rgba(138,43,226,0.06), rgba(58,199,255,0.03));display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+  .title{font-weight:700;color:#fff;margin:0 0 6px}
+  .desc{color:#bdbada;font-size:13px;margin:0 0 10px}
+  .meta{display:flex;justify-content:space-between;align-items:center}
+  .price{font-family:Orbitron;font-weight:700;color:#fff}
+  .actions{display:flex;gap:8px;margin-top:12px}
 
-  .p-actions{display:flex;gap:8px;margin-top:12px;align-items:center}
-  .small-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
-
-  /* Cart FAB */
-  .cart-fab{
-    position:fixed;right:22px;bottom:22px;z-index:200;display:flex;align-items:center;gap:10px;
-    background:linear-gradient(90deg,var(--accent1),var(--accent2));padding:12px 16px;border-radius:999px;color:#fff;box-shadow:0 18px 50px rgba(138,43,226,0.2);cursor:pointer;
+  /* FAB Cart */
+  .fab{
+    position:fixed;right:22px;bottom:22px;z-index:400;display:flex;align-items:center;gap:10px;
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));padding:12px 16px;border-radius:999px;color:#fff;box-shadow:0 18px 50px rgba(138,43,226,0.18);cursor:pointer;
   }
+  .fab .count{background:rgba(0,0,0,0.2);padding:6px 10px;border-radius:999px}
 
-  /* Admin modal/panel */
-  .modal{
-    position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:300;
-  }
-  .modal-card{
-    width:920px;max-width:95%;max-height:90vh;overflow:auto;background:linear-gradient(180deg,#0f1013,#121217);border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03);
-  }
-  .cols{display:grid;grid-template-columns:1fr 360px;gap:16px}
-  .admin-actions{display:flex;gap:8px;align-items:center;justify-content:flex-end}
+  /* Modal */
+  .modal{position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:800}
+  .modal-card{width:920px;max-width:95%;max-height:92vh;overflow:auto;background:linear-gradient(180deg,#0f1113,#0b0b0e);border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03)}
+  .modal .close{float:right;background:transparent;border:0;color:#bbb;cursor:pointer;font-size:20px}
 
-  /* Orders/Tickets list */
+  /* Lists */
   .list-item{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.02)}
-  .chat-box{background:#0b0b10;border-radius:8px;padding:10px;max-height:220px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
-  .msg{padding:8px;border-radius:10px;margin-bottom:8px;max-width:80%;}
-  .msg.user{background:linear-gradient(90deg, rgba(138,43,226,0.14), rgba(155,89,182,0.12));align-self:flex-start}
+  .chat{background:#0b0b10;border-radius:8px;padding:12px;max-height:320px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+  .msg{padding:8px;border-radius:12px;margin-bottom:8px;max-width:80%}
+  .msg.user{background:linear-gradient(90deg, rgba(138,43,226,0.12), rgba(155,89,182,0.10));align-self:flex-start}
   .msg.admin{background:linear-gradient(90deg, rgba(58,199,255,0.08), rgba(138,43,226,0.06));align-self:flex-end;margin-left:auto}
 
-  /* inputs */
   input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);outline:none;margin:6px 0}
   textarea{min-height:80px}
 
+  footer{padding:18px;text-align:center;color:#bdbada}
+
   /* responsive */
-  @media (max-width:920px){
-    .hero{grid-template-columns:1fr}
-    .cols{grid-template-columns:1fr}
-  }
+  @media (max-width:980px){ .hero{grid-template-columns:1fr} .modal-card{width:95%} .search input{width:140px} }
 </style>
 </head>
 <body>
 
-  <div class="topbar">
+  <header class="topbar">
     <div class="brand">
       <div class="logo">NH</div>
       <div>
@@ -145,73 +106,84 @@
       </div>
     </div>
 
-    <div style="display:flex;align-items:center;gap:14px">
-      <nav style="display:flex;gap:14px;margin-right:12px">
-        <a class="ghost" onclick="scrollToSection('catalog')">All</a>
-        <a class="ghost" onclick="filterCategory('ranks')">Ranks</a>
-      </nav>
-
-      <div class="nav-actions">
-        <button class="ghost" onclick="openAdminLogin()">Admin Login</button>
-        <button class="primary" onclick="openCart()">Cart (<span id="cartCount">0</span>)</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="hero">
-      <div class="hero-main">
-        <h1>Nebula Hardcore - Official Store</h1>
-        <p>Beli rank, cosmetic, dan item eksklusif untuk server <strong>play.nebulahc.my.id</strong>. Proses via WhatsApp. Admin dapat login untuk melihat pesanan & generate commands.</p>
-        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-          <span style="background:var(--glass);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.03)">IP: play.nebulahc.my.id</span>
-          <span style="background:var(--glass);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.03)">Support: WhatsApp</span>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="nav">
+        <div class="search">
+          <input id="searchInput" placeholder="Cari produk..." oninput="renderProducts()">
+          <select id="filterCategory" onchange="renderProducts()">
+            <option value="all">All</option>
+            <option value="ranks">Ranks</option>
+            <option value="cosmetic">Cosmetic</option>
+            <option value="keys">Keys</option>
+          </select>
         </div>
       </div>
 
-      <aside class="hero-side">
+      <div style="display:flex;gap:8px;align-items:center;margin-left:12px">
+        <button class="btn btn-ghost" onclick="openAdminLogin()">Admin Login</button>
+        <button class="btn btn-primary" onclick="openCart()">Cart (<span id="cartCount">0</span>)</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-left">
+        <h1>Nebula Hardcore - Official Store</h1>
+        <p>Beli rank, cosmetic, dan item eksklusif untuk server <strong>play.nebulahc.my.id</strong>. Proses via WhatsApp. Admin dapat login untuk memproses order & generate commands.</p>
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+          <div style="background:var(--glass);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.03)">IP: play.nebulahc.my.id</div>
+          <div style="background:var(--glass);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.03)">Support: WhatsApp</div>
+        </div>
+      </div>
+
+      <aside class="hero-right">
         <h4>Featured Pack</h4>
-        <p>Paket bundle terbaik untuk pemain kompetitif. Termasuk rank + cosmetic.</p>
-        <div style="display:flex;gap:10px;margin-top:12px">
-          <button class="primary" onclick="quickAdd('Titan')">Buy Now</button>
-          <button class="ghost" onclick="openCart()">Lihat Cart</button>
+        <p>Paket bundle terbaik untuk pemain kompetitif — rank + cosmetic.</p>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn-primary" onclick="quickAdd('Titan')">Buy Titan</button>
+          <button class="btn-ghost" onclick="openCart()">Lihat Cart</button>
         </div>
       </aside>
-    </div>
+    </section>
 
-    <div id="catalog">
+    <section id="catalog">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 class="section-title">Store Catalog</h3>
+        <h3 style="margin:8px 0">Store Catalog</h3>
         <div style="color:#bdbada">Klik <strong>Tambah</strong> lalu <strong>Checkout</strong> untuk chat WA admin.</div>
       </div>
-
       <div class="catalog" id="productGrid"></div>
-    </div>
+    </section>
+  </main>
+
+  <!-- FAB Cart -->
+  <div class="fab" title="Open cart" onclick="openCart()">
+    <i class="fa fa-shopping-cart"></i>
+    <div style="font-weight:700">Cart</div>
+    <div class="count" id="cartCountFab">0</div>
   </div>
 
-  <!-- Cart FAB -->
-  <div class="cart-fab" id="cartFab" onclick="openCart()">
-    <i class="fa fa-shopping-cart"></i>
-    <div style="min-width:48px;text-align:center">Cart (<span id="cartFabCount">0</span>)</div>
+  <!-- Product Detail Modal -->
+  <div class="modal" id="detailModal">
+    <div class="modal-card">
+      <button class="close" onclick="closeModal('detailModal')">&times;</button>
+      <div id="detailContent"></div>
+    </div>
   </div>
 
   <!-- Cart Modal -->
-  <div class="modal" id="cartModal" aria-hidden="true">
+  <div class="modal" id="cartModal">
     <div class="modal-card">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3>Your Cart</h3>
-        <div>
-          <button class="ghost" onclick="closeCart()">Close</button>
-        </div>
-      </div>
+      <button class="close" onclick="closeCart()">&times;</button>
+      <h3>Your Cart</h3>
       <div id="cartItems" style="max-height:360px;overflow:auto;margin-top:12px"></div>
       <div style="margin-top:12px">
         <label>Username Minecraft</label>
         <input id="mcName" placeholder="ProGamer123">
       </div>
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-        <button class="ghost" onclick="clearCart()">Clear</button>
-        <button class="primary" onclick="checkout()">Checkout (WhatsApp)</button>
+        <button class="btn-ghost" onclick="clearCart()">Clear</button>
+        <button class="btn-primary" onclick="checkout()">Checkout (WhatsApp)</button>
       </div>
     </div>
   </div>
@@ -219,12 +191,13 @@
   <!-- Admin Login Modal -->
   <div class="modal" id="adminLoginModal">
     <div class="modal-card">
+      <button class="close" onclick="closeAdminLogin()">&times;</button>
       <h3>Admin Login</h3>
-      <input id="adminUser" placeholder="Username (default)">
-      <input id="adminPass" type="password" placeholder="Password (default)">
+      <input id="adminUser" placeholder="Username (default admin)">
+      <input id="adminPass" type="password" placeholder="Password (default nebula123)">
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-        <button class="ghost" onclick="closeAdminLogin()">Cancel</button>
-        <button class="primary" onclick="doAdminLogin()">Login</button>
+        <button class="btn-ghost" onclick="closeAdminLogin()">Cancel</button>
+        <button class="btn-primary" onclick="doAdminLogin()">Login</button>
       </div>
     </div>
   </div>
@@ -232,20 +205,21 @@
   <!-- Admin Panel Modal -->
   <div class="modal" id="adminPanelModal">
     <div class="modal-card">
+      <button class="close" onclick="closeAdminPanel()">&times;</button>
       <div style="display:flex;justify-content:space-between;align-items:center">
         <h3>Admin Panel</h3>
         <div style="display:flex;gap:8px">
-          <button class="ghost" onclick="logoutAdmin()">Logout</button>
-          <button class="ghost" onclick="closeAdminPanel()">Close</button>
+          <button class="btn-ghost" onclick="logoutAdmin()">Logout</button>
+          <button class="btn-ghost" onclick="exportData()">Export JSON</button>
+          <button class="btn-ghost" onclick="importDataPrompt()">Import JSON</button>
         </div>
       </div>
 
-      <div class="cols" style="margin-top:12px">
+      <div style="display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:12px">
         <div>
           <h4>Orders</h4>
           <div id="ordersTbody" style="max-height:320px;overflow:auto"></div>
         </div>
-
         <div>
           <h4>Tickets</h4>
           <div id="ticketsList" style="max-height:320px;overflow:auto"></div>
@@ -256,23 +230,25 @@
 
       <div>
         <h4>Manage Products</h4>
-        <div style="display:grid;grid-template-columns:1fr 120px 120px;gap:8px">
+        <div style="display:grid;grid-template-columns:1fr 140px 140px;gap:8px">
           <input id="newTitle" placeholder="Nama produk (Rank • Titan)">
-          <input id="newPrice" placeholder="Harga (angka, mis: 130000)">
+          <input id="newPrice" placeholder="Harga (angka)">
           <input id="newImg" placeholder="URL gambar (opsional)">
         </div>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-          <button class="ghost" onclick="resetNewProduct()">Reset</button>
-          <button class="primary" id="saveProductBtn" onclick="saveProduct()">Tambah / Simpan</button>
+          <button class="btn-ghost" onclick="resetNewProduct()">Reset</button>
+          <button class="btn-primary" id="saveProductBtn" onclick="saveProduct()">Tambah / Simpan</button>
         </div>
-        <div id="productManageList" style="max-height:180px;overflow:auto;margin-top:12px"></div>
+
+        <div id="productManageList" style="max-height:200px;overflow:auto;margin-top:12px"></div>
       </div>
     </div>
   </div>
 
-  <!-- Ticket Modal (user create) -->
+  <!-- Ticket Create Modal (user) -->
   <div class="modal" id="ticketModal">
     <div class="modal-card">
+      <button class="close" onclick="closeTicketModal()">&times;</button>
       <h3>Create Ticket</h3>
       <input id="tUser" placeholder="Minecraft username">
       <input id="tEmail" placeholder="Email (optional)">
@@ -283,39 +259,40 @@
       </select>
       <textarea id="tDesc" placeholder="Deskripsikan masalah..."></textarea>
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-        <button class="ghost" onclick="closeTicket()">Cancel</button>
-        <button class="primary" onclick="submitTicket()">Submit Ticket</button>
+        <button class="btn-ghost" onclick="closeTicketModal()">Cancel</button>
+        <button class="btn-primary" onclick="submitTicket()">Submit Ticket</button>
       </div>
     </div>
   </div>
 
+  <!-- Toast -->
+  <div id="toast" style="position:fixed;right:20px;bottom:20px;background:#111;padding:12px 16px;border-radius:8px;opacity:0;transition:all .4s;z-index:9999;color:var(--muted)"></div>
+
 <script>
-/* -------------------------
-   State & initial data
-   ------------------------- */
-const WA_NUMBER = '0089677559943'; // nomor WA checkout
+/* =============================
+   INITIAL STATE & STORAGE
+   ============================= */
+const WA_NUMBER = '0089677559943'; // number for checkout
 const ADMIN_USER = 'admin';
 const ADMIN_PASS = 'nebula123';
 
 let products = JSON.parse(localStorage.getItem('nh_products')) || [
   { id:1, title:"Mace Full Enc", price:30000, category:"ranks", desc:"Mace Full Enc", img:"" },
-  { id:2, title:"Rank • Voidling", price:15000, category:"ranks", desc:"Rank • Voidling", img:"" },
-  { id:3, title:"Rank • Phantom", price:30000, category:"ranks", desc:"Rank • Phantom", img:"" },
-  { id:4, title:"Rank • Warlord", price:60000, category:"ranks", desc:"Rank • Warlord", img:"" },
-  { id:5, title:"Rank • Overseer", price:90000, category:"ranks", desc:"Rank • Overseer", img:"" },
-  { id:6, title:"Rank • Eternal", price:100000, category:"ranks", desc:"Rank • Eternal", img:"" },
-  { id:7, title:"Rank • Titan", price:130000, category:"ranks", desc:"Rank • Titan", img:"" }
+  { id:2, title:"Rank • Voidling", price:15000, category:"ranks", desc:"Voidling rank", img:"" },
+  { id:3, title:"Rank • Phantom", price:30000, category:"ranks", desc:"Phantom rank", img:"" },
+  { id:4, title:"Rank • Warlord", price:60000, category:"ranks", desc:"Warlord rank", img:"" },
+  { id:5, title:"Rank • Overseer", price:90000, category:"ranks", desc:"Overseer rank", img:"" },
+  { id:6, title:"Rank • Eternal", price:100000, category:"ranks", desc:"Eternal rank", img:"" },
+  { id:7, title:"Rank • Titan", price:130000, category:"ranks", desc:"Titan rank", img:"" }
 ];
-
-let cart = JSON.parse(localStorage.getItem('nh_cart') || '[]');
-let orders = JSON.parse(localStorage.getItem('nh_orders') || '[]');
-let tickets = JSON.parse(localStorage.getItem('nh_tickets') || '[]');
-
+let cart = JSON.parse(localStorage.getItem('nh_cart')||'[]');
+let orders = JSON.parse(localStorage.getItem('nh_orders')||'[]');
+let tickets = JSON.parse(localStorage.getItem('nh_tickets')||'[]');
 let editingProductId = null;
 
-/* -------------------------
-   UTIL
-   ------------------------- */
+/* =============================
+   UTILITIES
+   ============================= */
 function saveAll(){
   localStorage.setItem('nh_products', JSON.stringify(products));
   localStorage.setItem('nh_cart', JSON.stringify(cart));
@@ -323,380 +300,367 @@ function saveAll(){
   localStorage.setItem('nh_tickets', JSON.stringify(tickets));
 }
 
-function formatRp(n){ return 'Rp' + (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
-
-/* -------------------------
-   Render Products
-   ------------------------- */
-const productGrid = document.getElementById('productGrid');
-
-function productImgHTML(p){
-  if(p.img) return `<img src="${p.img}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">`;
-  // fallback neon SVG badge — shows name initials or simple icon
-  const name = (p.title||'').split('•').pop().trim();
-  const txt = name.split(' ')[0] || name;
-  const svg = `<svg width="100%" height="100%" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#7b2cff"/><stop offset="1" stop-color="#3ac7ff"/></linearGradient></defs>
-    <rect width="100%" height="100%" fill="#08080b"/>
-    <g transform="translate(400,200)" font-family="Orbitron, sans-serif">
-      <text x="0" y="20" font-size="84" text-anchor="middle" fill="url(#g)" opacity="0.95">${escapeHtml(txt)}</text>
-    </g>
-  </svg>`;
-  return svg;
+function toast(msg, time=2500){
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.opacity = 1;
+  setTimeout(()=> t.style.opacity = 0, time);
 }
 
-function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function formatRp(n){ return 'Rp' + (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
+function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+/* =============================
+   RENDER PRODUCTS
+   ============================= */
+const productGrid = document.getElementById('productGrid');
+function productImgHTML(p){
+  if(p.img) return `<img src="${p.img}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">`;
+  const txt = escapeHtml((p.title||'').split('•').pop().trim().split(' ')[0] || 'NH');
+  return `<div style="width:100%;height:100%;display:grid;place-items:center;color:#fff;font-family:Orbitron;font-size:36px">${txt}</div>`;
+}
 function renderProducts(){
+  const q = (document.getElementById('searchInput').value||'').toLowerCase().trim();
+  const cat = document.getElementById('filterCategory').value;
   productGrid.innerHTML = '';
-  products.forEach(p=>{
-    const div = document.createElement('div');
-    div.className = 'product';
-    div.innerHTML = `
+  products.filter(p=>{
+    if(cat !== 'all' && p.category !== cat) return false;
+    if(!q) return true;
+    return (p.title + ' ' + (p.desc||'')).toLowerCase().includes(q);
+  }).forEach(p=>{
+    const el = document.createElement('div'); el.className='card';
+    el.innerHTML = `
       <div class="thumb">${productImgHTML(p)}</div>
-      <div class="p-title">${escapeHtml(p.title)}</div>
-      <div class="p-desc">${escapeHtml(p.desc||'')}</div>
-      <div class="p-meta">
-        <div style="font-size:13px;color:#bdbada">${p.category.toUpperCase()}</div>
-        <div class="p-price">${formatRp(p.price)}</div>
-      </div>
-      <div class="p-actions">
-        <button class="small-btn" onclick="viewDetails(${p.id})"><i class="fa fa-circle-info"></i> Detail</button>
-        <button class="primary" onclick="addToCart(${p.id})"><i class="fa fa-plus"></i> Tambah</button>
+      <div class="title">${escapeHtml(p.title)}</div>
+      <div class="desc">${escapeHtml(p.desc||'')}</div>
+      <div class="meta"><div style="font-size:13px;color:#bdbada">${escapeHtml(p.category)}</div><div class="price">${formatRp(p.price)}</div></div>
+      <div class="actions">
+        <button class="btn-ghost" onclick="openDetail(${p.id})"><i class="fa fa-info-circle"></i> Detail</button>
+        <button class="btn-primary" onclick="addToCart(${p.id})"><i class="fa fa-plus"></i> Tambah</button>
       </div>
     `;
-    productGrid.appendChild(div);
+    productGrid.appendChild(el);
   });
 }
+renderProducts();
 
-/* -------------------------
-   Cart
-   ------------------------- */
+/* =============================
+   PRODUCT DETAIL
+   ============================= */
+function openDetail(id){
+  const p = products.find(x=>x.id===id); if(!p) return;
+  document.getElementById('detailContent').innerHTML = `
+    <button class="close" onclick="closeModal('detailModal')">&times;</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="min-height:200px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg, rgba(138,43,226,0.06), rgba(58,199,255,0.03))">${productImgHTML(p)}</div>
+      <div>
+        <h2 style="margin-top:0">${escapeHtml(p.title)}</h2>
+        <div style="color:#bdbada;margin-bottom:8px">${escapeHtml(p.desc||'')}</div>
+        <div style="font-weight:800;font-family:Orbitron">${formatRp(p.price)}</div>
+        <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+          <button class="btn-ghost" onclick="closeModal('detailModal')">Close</button>
+          <button class="btn-primary" onclick="addToCart(${p.id}); closeModal('detailModal')">Tambah ke Cart</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('detailModal').style.display = 'flex';
+}
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+
+/* =============================
+   CART
+   ============================= */
 function addToCart(id){
-  const p = products.find(x=>x.id===id);
-  if(!p) return;
-  const found = cart.find(c=>c.id===id);
-  if(found) found.qty++;
-  else cart.push({ id:p.id, title:p.title, price:p.price, qty:1, img:p.img || ''});
-  saveAll(); renderCartCount(); openCart();
+  const p = products.find(x=>x.id===id); if(!p) return;
+  const exist = cart.find(c=>c.id===id);
+  if(exist) exist.qty++;
+  else cart.push({ id:p.id, title:p.title, price:p.price, qty:1, img:p.img||'' });
+  saveAll(); renderCartCount(); openCart(); toast('Produk ditambahkan ke cart');
 }
-
-function quickAdd(title){
-  const p = products.find(x=>x.title.toLowerCase().includes(title.toLowerCase()));
-  if(p) addToCart(p.id);
-}
+function quickAdd(text){ const p = products.find(x=>x.title.toLowerCase().includes(text.toLowerCase())); if(p) addToCart(p.id); }
 
 function renderCartCount(){
-  const total = cart.reduce((s,i)=>s+i.qty,0);
-  document.getElementById('cartCount').innerText = total;
-  document.getElementById('cartFabCount').innerText = total;
+  const totalQty = cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('cartCount').innerText = totalQty;
+  document.getElementById('cartCountFab').innerText = totalQty;
 }
 renderCartCount();
 
 function openCart(){
   document.getElementById('cartModal').style.display='flex';
-  renderCartItems();
-}
-function closeCart(){ document.getElementById('cartModal').style.display='none'; }
-
-function renderCartItems(){
-  const el = document.getElementById('cartItems');
-  el.innerHTML = '';
-  if(cart.length===0){ el.innerHTML='<div style="opacity:.9">Cart kosong.</div>'; return; }
-  cart.forEach((it,idx)=>{
-    const row = document.createElement('div');
-    row.className = 'list-item';
+  const el = document.getElementById('cartItems'); el.innerHTML='';
+  if(cart.length===0){ el.innerHTML = '<div style="opacity:.9">Cart kosong</div>'; return; }
+  cart.forEach((it, idx)=>{
+    const row = document.createElement('div'); row.className='list-item';
     row.innerHTML = `
       <div style="display:flex;gap:12px;align-items:center">
-        <div style="width:72px;height:64px;border-radius:8px;overflow:hidden">${it.img?'<img src="'+it.img+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;background:linear-gradient(135deg, rgba(123,44,255,0.12), rgba(58,199,255,0.08));display:grid;place-items:center">'+escapeHtml(it.title.split('•').pop().trim())+'</div>'}</div>
+        <div style="width:88px;height:64px;border-radius:8px;overflow:hidden">${it.img?'<img src="'+it.img+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;display:grid;place-items:center">'+escapeHtml(it.title.split('•').pop().trim())+'</div>'}</div>
         <div style="flex:1">
           <div style="font-weight:700">${escapeHtml(it.title)}</div>
-          <div style="font-size:13px;color:#bdbada">${formatRp(it.price)}</div>
+          <div style="color:#bdbada">${formatRp(it.price)}</div>
         </div>
         <div style="text-align:right">
-          <div style="font-weight:700">${formatRp(it.price * it.qty)}</div>
-          <div style="display:flex;gap:6px;margin-top:6px;justify-content:flex-end">
-            <button class="small-btn" onclick="dec(${idx})">-</button>
+          <div style="font-weight:800">${formatRp(it.price * it.qty)}</div>
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:6px">
+            <button class="btn-ghost" onclick="dec(${idx})">-</button>
             <div style="padding:6px 10px;background:rgba(255,255,255,0.02);border-radius:6px">${it.qty}</div>
-            <button class="small-btn" onclick="inc(${idx})">+</button>
+            <button class="btn-ghost" onclick="inc(${idx})">+</button>
           </div>
-          <div style="margin-top:8px"><button class="small-btn" onclick="removeItem(${idx})">Remove</button></div>
+          <div style="margin-top:8px"><button class="btn-ghost" onclick="removeItem(${idx})">Remove</button></div>
         </div>
       </div>
     `;
     el.appendChild(row);
   });
 }
+function closeCart(){ document.getElementById('cartModal').style.display='none'; }
+function inc(i){ cart[i].qty++; saveAll(); renderCartCount(); openCart(); }
+function dec(i){ cart[i].qty = Math.max(1, cart[i].qty-1); saveAll(); renderCartCount(); openCart(); }
+function removeItem(i){ cart.splice(i,1); saveAll(); renderCartCount(); openCart(); }
+function clearCart(){ if(!confirm('Kosongkan cart?')) return; cart=[]; saveAll(); renderCartCount(); openCart(); }
 
-function inc(i){ cart[i].qty++; saveAll(); renderCartItems(); renderCartCount(); }
-function dec(i){ cart[i].qty = Math.max(1, cart[i].qty-1); saveAll(); renderCartItems(); renderCartCount(); }
-function removeItem(i){ cart.splice(i,1); saveAll(); renderCartItems(); renderCartCount(); }
-function clearCart(){ if(!confirm('Kosongkan cart?')) return; cart=[]; saveAll(); renderCartItems(); renderCartCount(); }
-
+/* Checkout - create order & open WA */
 function checkout(){
-  if(cart.length===0){ alert('Cart kosong.'); return; }
+  if(cart.length===0){ alert('Cart kosong'); return; }
   const mc = (document.getElementById('mcName')||{}).value.trim();
   if(!mc){ alert('Masukkan Minecraft username.'); return; }
-  let itemsText = '', total=0;
-  cart.forEach(c=>{ itemsText += `- ${c.title} x${c.qty} (${formatRp(c.price)})\n`; total += c.price * c.qty; });
+  let itemsText = '', total = 0;
+  cart.forEach(c=> { itemsText += `- ${c.title} x${c.qty} (${formatRp(c.price)})\n`; total += c.price*c.qty; });
   const order = { id: Date.now(), mcName: mc, items: cart.map(c=>({title:c.title,price:c.price,qty:c.qty})), total, status:'pending', created: new Date().toISOString() };
   orders.unshift(order);
   saveAll();
-  cart = []; saveAll(); renderCartItems(); renderCartCount(); closeCart();
-  // build WA message
+  cart = []; saveAll(); renderCartCount(); closeCart(); renderOrders();
+  // open wa
   const msg = `Bang saya mau beli rank Nebula Hardcore\nUsername: ${mc}\n\nDaftar item:\n${itemsText}\nTotal: ${formatRp(total)}\nServer: play.nebulahc.my.id\nTerima kasih.`;
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-  renderOrders();
-  alert('Order tersimpan dan WhatsApp dibuka.');
+  toast('Order tersimpan — membuka WhatsApp');
 }
 
-/* -------------------------
-   Orders - Admin
-   ------------------------- */
+/* =============================
+   ORDERS (ADMIN)
+   ============================= */
 function renderOrders(){
-  const tbody = document.getElementById('ordersTbody');
-  tbody.innerHTML = '';
+  const el = document.getElementById('ordersTbody'); el.innerHTML = '';
   orders.forEach(o=>{
-    const div = document.createElement('div');
-    div.className='list-item';
-    const itemsSummary = o.items.map(i=>`${i.title} x${i.qty}`).join(', ');
+    const div = document.createElement('div'); div.className='list-item';
+    const items = o.items.map(x=>`${x.title} x${x.qty}`).join(', ');
     div.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div>
           <div style="font-weight:700">${escapeHtml(o.mcName)}</div>
-          <div style="font-size:13px;color:#bdbada">${itemsSummary}</div>
-          <div style="font-size:12px;color:#bdbada;margin-top:6px">${new Date(o.created).toLocaleString()}</div>
+          <div style="color:#bdbada;font-size:13px">${items}</div>
+          <div style="color:#bdbada;font-size:12px;margin-top:6px">${new Date(o.created).toLocaleString()}</div>
         </div>
         <div style="text-align:right">
           <div style="font-weight:800">${formatRp(o.total)}</div>
           <div style="display:flex;gap:6px;margin-top:8px;justify-content:flex-end">
-            <button class="small-btn" onclick="copyCommands(${o.id})">Copy Cmds</button>
-            <button class="small-btn" onclick="markFulfilled(${o.id})">Mark</button>
-            <button class="small-btn" onclick="deleteOrder(${o.id})">Delete</button>
+            <button class="btn-ghost" onclick="copyCommands(${o.id})">Copy Cmds</button>
+            <button class="btn-ghost" onclick="markFulfilled(${o.id})">Mark</button>
+            <button class="btn-ghost" onclick="deleteOrder(${o.id})">Delete</button>
           </div>
         </div>
       </div>
     `;
-    tbody.appendChild(div);
+    el.appendChild(div);
   });
 }
 function copyCommands(id){
-  const o = orders.find(x=>x.id===id);
-  if(!o) return alert('Order tidak ditemukan');
+  const o = orders.find(x=>x.id===id); if(!o){ alert('Order tidak ditemukan'); return; }
   let cmds = `# Commands for ${o.mcName}\n`;
   o.items.forEach(it=>{
-    // Use title to derive rank tag: take last word (simple heuristic)
     const rank = (it.title.split('•')[1] || it.title).trim().toLowerCase().split(' ')[0];
     cmds += `lp user ${o.mcName} parent set ${rank}\n`;
   });
-  navigator.clipboard.writeText(cmds).then(()=>alert('Commands disalin ke clipboard'));
+  navigator.clipboard.writeText(cmds).then(()=>toast('Commands copied'));
 }
-function markFulfilled(id){
-  const i = orders.findIndex(x=>x.id===id); if(i===-1) return;
-  orders[i].status = 'fulfilled'; saveAll(); renderOrders(); alert('Order ditandai fulfilled');
-}
-function deleteOrder(id){
-  if(!confirm('Hapus order ini?')) return;
-  orders = orders.filter(x=>x.id!==id); saveAll(); renderOrders(); alert('Order dihapus');
-}
+function markFulfilled(id){ const idx = orders.findIndex(x=>x.id===id); if(idx===-1) return; orders[idx].status='fulfilled'; saveAll(); renderOrders(); toast('Order marked fulfilled'); }
+function deleteOrder(id){ if(!confirm('Hapus order?')) return; orders = orders.filter(x=>x.id!==id); saveAll(); renderOrders(); toast('Order dihapus'); }
 
-/* -------------------------
-   Tickets (user & admin chat)
-   ------------------------- */
+/* =============================
+   TICKETS (USER & ADMIN CHAT)
+   ============================= */
 function renderTickets(){
-  const el = document.getElementById('ticketsList');
-  el.innerHTML = '';
+  const el = document.getElementById('ticketsList'); el.innerHTML='';
   tickets.forEach((t, idx)=>{
-    const div = document.createElement('div');
-    div.className = 'list-item';
-    const chatHtml = (t.chat||[]).map(m=>`<div class="msg ${m.from}">${escapeHtml(m.msg)}</div>`).join('');
+    const div = document.createElement('div'); div.className='list-item';
+    const preview = (t.chat||[]).slice(-1)[0]; const previewText = preview? preview.msg : t.desc;
     div.innerHTML = `
-      <div style="display:flex;justify-content:space-between">
-        <div><b>${escapeHtml(t.user)}</b> <div style="font-size:12px;color:#bdbada">${t.cat} • ${new Date(t.created).toLocaleString()}</div></div>
-        <div style="text-align:right">
-          <button class="small-btn" onclick="openTicketThread(${idx})">Open</button>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:700">${escapeHtml(t.user)}</div>
+          <div style="color:#bdbada;font-size:13px">${escapeHtml(previewText)}</div>
+          <div style="font-size:12px;color:#bdbada;margin-top:6px">${new Date(t.created).toLocaleString()}</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-ghost" onclick="openTicketThread(${idx})">Open</button>
+          <button class="btn-ghost" onclick="closeTicketAdmin(${idx})">Close</button>
         </div>
       </div>
-      <div style="margin-top:8px">${escapeHtml(t.desc)}</div>
     `;
     el.appendChild(div);
   });
 }
-renderTickets();
-
-function openTicket(){ document.getElementById('ticketModal').style.display='flex'; }
-function closeTicket(){ document.getElementById('ticketModal').style.display='none'; }
-
 function submitTicket(){
-  const u = document.getElementById('tUser').value.trim();
-  const e = document.getElementById('tEmail').value.trim();
-  const c = document.getElementById('tCat').value;
-  const d = document.getElementById('tDesc').value.trim();
+  const u = (document.getElementById('tUser')||{}).value.trim();
+  const e = (document.getElementById('tEmail')||{}).value.trim();
+  const c = (document.getElementById('tCat')||{}).value;
+  const d = (document.getElementById('tDesc')||{}).value.trim();
   if(!u || !d){ alert('Isi username dan deskripsi'); return; }
-  const t = { id: Date.now(), user:u, email:e, cat:c, desc:d, status:'open', created:new Date().toISOString(), chat:[{from:'user', msg:d, ts:new Date().toISOString()}] };
-  tickets.unshift(t); saveAll(); renderTickets(); closeTicket(); alert('Ticket terkirim');
+  const t = { id: Date.now(), user:u, email:e, cat:c, desc:d, status:'open', created:new Date().toISOString(), chat:[{from:'user',msg:d,ts:new Date().toISOString()}] };
+  tickets.unshift(t); saveAll(); renderTickets(); closeTicketModal(); toast('Ticket dibuat');
 }
+function openTicket(){ document.getElementById('ticketModal').style.display='flex'; }
+function closeTicketModal(){ document.getElementById('ticketModal').style.display='none'; }
 
 function openTicketThread(i){
-  // show modal with chat thread and reply box for admin
   const t = tickets[i];
-  const modal = document.createElement('div');
-  modal.className = 'modal';
-  modal.style.display='flex';
-  modal.innerHTML = `<div class="modal-card" style="max-width:640px">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div><h3>Ticket: ${escapeHtml(t.user)}</h3><div style="font-size:12px;color:#bdbada">${t.cat} • ${new Date(t.created).toLocaleString()}</div></div>
-      <div><button class="ghost" onclick="this.closest('.modal').remove()">Close</button></div>
-    </div>
-    <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
-      <div style="background:rgba(0,0,0,0.4);padding:10px;border-radius:8px;max-height:320px;overflow:auto" id="threadChat">${(t.chat||[]).map(m=>`<div class="msg ${m.from}">${escapeHtml(m.msg)}</div>`).join('')}</div>
-      <textarea id="threadReply" placeholder="Balas ticket..."></textarea>
-      <div style="display:flex;gap:8px;justify-content:flex-end">
-        <button class="ghost" onclick="closeThread(this)">Cancel</button>
-        <button class="primary" onclick="sendThreadReply(${i})">Kirim Balasan</button>
-      </div>
+  const modal = document.createElement('div'); modal.className='modal'; modal.style.display='flex';
+  modal.innerHTML = `<div class="modal-card">
+    <button class="close" onclick="this.closest('.modal').remove()">&times;</button>
+    <h3>Ticket • ${escapeHtml(t.user)}</h3>
+    <div style="color:#bdbada;font-size:13px">${t.cat} • ${new Date(t.created).toLocaleString()}</div>
+    <div style="margin-top:12px" class="chat" id="threadChat">${(t.chat||[]).map(m=>`<div class="msg ${m.from}">${escapeHtml(m.msg)}</div>`).join('')}</div>
+    <textarea id="threadReply" placeholder="Ketik balasan admin..."></textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn-ghost" onclick="this.closest('.modal').remove()">Close</button>
+      <button class="btn-primary" onclick="sendThreadReply(${i})">Send</button>
     </div>
   </div>`;
   document.body.appendChild(modal);
 }
-
-function closeThread(btn){ btn.closest('.modal').remove(); }
-
 function sendThreadReply(i){
   const area = document.getElementById('threadReply');
   const text = area.value.trim();
   if(!text) return alert('Masukkan pesan');
-  tickets[i].chat.push({ from:'admin', msg:text, ts: new Date().toISOString()});
+  tickets[i].chat.push({ from:'admin', msg:text, ts:new Date().toISOString()});
   saveAll();
-  // refresh UI: update thread content if modal open
-  const mod = document.querySelector('.modal .modal-card');
-  if(mod){
-    const thread = mod.querySelector('#threadChat');
-    thread.innerHTML += `<div class="msg admin">${escapeHtml(text)}</div>`;
-    area.value='';
-  }
-  renderTickets(); renderAdminTickets();
-  alert('Balasan terkirim');
+  // If thread modal open, append
+  const thread = document.querySelector('.modal .chat');
+  if(thread) thread.innerHTML += `<div class="msg admin">${escapeHtml(text)}</div>`;
+  area.value=''; renderTickets(); renderAdminTickets();
+  toast('Balasan terkirim');
 }
+function closeTicketAdmin(i){ tickets[i].status='closed'; saveAll(); renderTickets(); renderAdminTickets(); toast('Ticket ditutup'); }
 
-/* -------------------------
-   Admin panel logic (login + manage)
-   ------------------------- */
+/* =============================
+   ADMIN AUTH & PANEL
+   ============================= */
 function openAdminLogin(){ document.getElementById('adminLoginModal').style.display='flex'; }
 function closeAdminLogin(){ document.getElementById('adminLoginModal').style.display='none'; }
 function doAdminLogin(){
-  const u = document.getElementById('adminUser').value.trim();
-  const p = document.getElementById('adminPass').value;
+  const u = (document.getElementById('adminUser')||{}).value.trim();
+  const p = (document.getElementById('adminPass')||{}).value;
   if(u === ADMIN_USER && p === ADMIN_PASS){
     closeAdminLogin();
     document.getElementById('adminPanelModal').style.display='flex';
-    renderOrders();
-    renderAdminTickets();
-    renderProductManage();
-    alert('Login sukses');
-  } else alert('Kredensial salah');
+    renderOrders(); renderAdminTickets(); renderProductManage();
+    toast('Login sukses');
+  } else toast('Login gagal');
 }
 function closeAdminPanel(){ document.getElementById('adminPanelModal').style.display='none'; }
-function logoutAdmin(){ closeAdminPanel(); alert('Logout berhasil'); }
+function logoutAdmin(){ closeAdminPanel(); toast('Logout'); }
 
-/* product manage */
+/* Product admin */
 function renderProductManage(){
-  const el = document.getElementById('productManageList');
-  el.innerHTML = '';
+  const el = document.getElementById('productManageList'); el.innerHTML='';
   products.forEach(p=>{
-    const div = document.createElement('div');
-    div.className='list-item';
-    div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
-      <div><b>${escapeHtml(p.title)}</b><div class="small" style="margin-top:6px">${formatRp(p.price)}</div></div>
+    const d = document.createElement('div'); d.className='list-item';
+    d.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+      <div><b>${escapeHtml(p.title)}</b><div style="color:#bdbada;font-size:13px">${formatRp(p.price)}</div></div>
       <div style="display:flex;gap:8px">
-        <button class="small-btn" onclick="editProduct(${p.id})">Edit</button>
-        <button class="small-btn" onclick="removeProduct(${p.id})">Hapus</button>
+        <button class="btn-ghost" onclick="editProduct(${p.id})">Edit</button>
+        <button class="btn-ghost" onclick="removeProduct(${p.id})">Hapus</button>
       </div>
     </div>`;
-    el.appendChild(div);
+    el.appendChild(d);
   });
 }
-
 function saveProduct(){
   const title = (document.getElementById('newTitle')||{}).value.trim();
   const price = parseInt((document.getElementById('newPrice')||{}).value);
   const img = (document.getElementById('newImg')||{}).value.trim();
-  if(!title || isNaN(price)){ alert('Nama & harga diperlukan'); return; }
+  if(!title || isNaN(price)){ return alert('Nama & harga valid diperlukan'); }
   if(editingProductId){
-    const idx = products.findIndex(x=>x.id === editingProductId);
-    if(idx !== -1){
-      products[idx].title = title;
-      products[idx].price = price;
-      products[idx].img = img;
-      alert('Produk diperbarui');
-    }
-    editingProductId = null;
-    document.getElementById('saveProductBtn').innerText = 'Tambah / Simpan';
+    const idx = products.findIndex(x=>x.id===editingProductId);
+    if(idx!==-1){ products[idx].title=title; products[idx].price=price; products[idx].img=img; toast('Produk diperbarui'); }
+    editingProductId=null; document.getElementById('saveProductBtn').innerText='Tambah / Simpan';
   } else {
-    const id = Date.now();
-    products.unshift({ id, title, price, category:'ranks', desc:title, img });
-    alert('Produk ditambahkan');
+    const id = Date.now(); products.unshift({ id, title, price, category:'ranks', desc:title, img });
+    toast('Produk ditambahkan');
   }
   document.getElementById('newTitle').value=''; document.getElementById('newPrice').value=''; document.getElementById('newImg').value='';
   saveAll(); renderProducts(); renderProductManage();
 }
 function editProduct(id){
-  const p = products.find(x=>x.id===id);
-  if(!p) return;
+  const p = products.find(x=>x.id===id); if(!p) return;
   editingProductId = id;
   document.getElementById('newTitle').value = p.title;
   document.getElementById('newPrice').value = p.price;
   document.getElementById('newImg').value = p.img || '';
-  document.getElementById('saveProductBtn').innerText = 'Simpan Perubahan';
-  // ensure admin panel open
+  document.getElementById('saveProductBtn').innerText='Simpan Perubahan';
   document.getElementById('adminPanelModal').style.display='flex';
 }
-function removeProduct(id){
-  if(!confirm('Hapus produk?')) return;
-  products = products.filter(x=>x.id!==id);
-  saveAll(); renderProducts(); renderProductManage();
-  alert('Produk dihapus');
-}
-function resetNewProduct(){
-  editingProductId = null;
-  document.getElementById('newTitle').value='';
-  document.getElementById('newPrice').value='';
-  document.getElementById('newImg').value='';
-  document.getElementById('saveProductBtn').innerText = 'Tambah / Simpan';
-}
+function removeProduct(id){ if(!confirm('Hapus produk?')) return; products = products.filter(x=>x.id!==id); saveAll(); renderProducts(); renderProductManage(); toast('Produk dihapus'); }
+function resetNewProduct(){ editingProductId=null; document.getElementById('newTitle').value=''; document.getElementById('newPrice').value=''; document.getElementById('newImg').value=''; document.getElementById('saveProductBtn').innerText='Tambah / Simpan'; }
 
-/* admin tickets list */
+/* Admin tickets list */
 function renderAdminTickets(){
-  const el = document.getElementById('ticketsList');
-  el.innerHTML = '';
-  tickets.forEach((t,i)=>{
-    const div = document.createElement('div');
-    div.className='list-item';
-    const chatPreview = (t.chat||[]).slice(-1).map(c=>escapeHtml(c.msg)).join(' ');
-    div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
-      <div><b>${escapeHtml(t.user)}</b><div style="font-size:13px;color:#bdbada">${escapeHtml(chatPreview)}</div></div>
-      <div style="display:flex;gap:8px"><button class="small-btn" onclick="openTicketThread(${i})">Open</button><button class="small-btn" onclick="closeTicketAdmin(${i})">Close</button></div>
+  const el = document.getElementById('ticketsList'); el.innerHTML='';
+  tickets.forEach((t, i)=>{
+    const d = document.createElement('div'); d.className='list-item';
+    const preview = (t.chat||[]).slice(-1)[0]; const txt = preview? preview.msg : t.desc;
+    d.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+      <div><b>${escapeHtml(t.user)}</b><div style="color:#bdbada;font-size:13px">${escapeHtml(txt)}</div></div>
+      <div style="display:flex;gap:8px"><button class="btn-ghost" onclick="openTicketThread(${i})">Open</button><button class="btn-ghost" onclick="closeTicketAdmin(${i})">Close</button></div>
     </div>`;
-    el.appendChild(div);
+    el.appendChild(d);
   });
 }
 
-/* -------------------------
-   Init render
-   ------------------------- */
-renderProducts();
-renderCartCount();
-renderOrders();
-renderTickets();
-renderAdminTickets();
-renderProductManage();
-
-/* utility to scroll to catalog */
-function scrollToSection(id){
-  const el = document.getElementById('catalog');
-  if(el) el.scrollIntoView({behavior:'smooth'});
+/* =============================
+   EXPORT / IMPORT
+   ============================= */
+function exportData(){
+  const data = { products, orders, tickets };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'nebulahc-data.json'; a.click();
+  URL.revokeObjectURL(url); toast('Exported JSON');
 }
+function importDataPrompt(){
+  const input = document.createElement('input'); input.type='file'; input.accept='application/json';
+  input.onchange = e => {
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      try{
+        const d = JSON.parse(ev.target.result);
+        if(d.products) products = d.products;
+        if(d.orders) orders = d.orders;
+        if(d.tickets) tickets = d.tickets;
+        saveAll(); renderProducts(); renderOrders(); renderTickets(); renderAdminTickets(); renderProductManage();
+        toast('Import selesai');
+      }catch(err){ alert('File tidak valid') }
+    };
+    r.readAsText(f);
+  };
+  input.click();
+}
+
+/* =============================
+   INIT / RENDER
+   ============================= */
+function renderOrders(){ renderOrders = renderOrders; /* placeholder to satisfy hoisting */ }
+renderProducts(); renderCartCount(); renderOrders(); renderTickets(); renderAdminTickets(); renderProductManage();
+
+/* Because renderOrders defined earlier uses closure, ensure final render function exists */
+function renderOrders(){ const el=document.getElementById('ordersTbody'); el.innerHTML=''; orders.forEach(o=>{ const div=document.createElement('div'); div.className='list-item'; const items=o.items.map(x=>`${x.title} x${x.qty}`).join(', '); div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-weight:700">${escapeHtml(o.mcName)}</div><div style="color:#bdbada">${escapeHtml(items)}</div><div style="font-size:12px;color:#bdbada;margin-top:6px">${new Date(o.created).toLocaleString()}</div></div><div style="text-align:right"><div style="font-weight:800">${formatRp(o.total)}</div><div style="display:flex;gap:6px;margin-top:8px;justify-content:flex-end"><button class="btn-ghost" onclick="copyCommands(${o.id})">Copy Cmds</button><button class="btn-ghost" onclick="markFulfilled(${o.id})">Mark</button><button class="btn-ghost" onclick="deleteOrder(${o.id})">Delete</button></div></div></div>`; el.appendChild(div); }); }
+
 </script>
 
+<footer>
+  &copy; 2025 Nebula Hardcore • play.nebulahc.my.id
+</footer>
 </body>
 </html>
