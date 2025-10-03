@@ -1,4 +1,4 @@
-# Membuat file index.html bergaya toko (inspirasi dari store.minesive.com) dengan nama "Nebula Hardcore"
+# Update the existing index.html content with the specified server IP and rank products.
 html_content = """<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -393,13 +393,14 @@ html_content = """<!DOCTYPE html>
   </div>
 
   <script>
-    // Sample products (bisa diganti)
+    // Products set to the ranks and server IP requested by user
     const products = [
-      { id:1, title:"Rank • Elite", price:"$10", category:"ranks", desc:"Rank Elite dengan tag unik.", img:"https://images.unsplash.com/photo-1605902711622-cfb43c44367e?auto=format&fit=crop&w=800&q=60" },
-      { id:2, title:"Cosmetic • Nebula Cape", price:"$5", category:"cosmetic", desc:"Cape bercahaya custom.", img:"https://images.unsplash.com/photo-1546443046-ed1ce6ffd1d6?auto=format&fit=crop&w=800&q=60" },
-      { id:3, title:"Key • Mystery Box", price:"$2", category:"keys", desc:"Buka hadiah acak.", img:"https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=60" },
-      { id:4, title:"Rank • Veteran", price:"$7", category:"ranks", desc:"Rank Veteran + beberapa perks.", img:"https://images.unsplash.com/photo-1546456073-6712f79251bb?auto=format&fit=crop&w=800&q=60" },
-      { id:5, title:"Cosmetic • Nebula Hat", price:"$3", category:"cosmetic", desc:"Topi keren bergaya sci-fi.", img:"https://images.unsplash.com/photo-1520975912779-6a6f3c8ae4a4?auto=format&fit=crop&w=800&q=60" }
+      { id:1, title:"Rank • Voidling", price:"15k", category:"ranks", desc:"Voidling rank — 15k", img:"https://images.unsplash.com/photo-1605902711622-cfb43c44367e?auto=format&fit=crop&w=800&q=60" },
+      { id:2, title:"Rank • Phantom", price:"30k", category:"ranks", desc:"Phantom rank — 30k", img:"https://images.unsplash.com/photo-1546443046-ed1ce6ffd1d6?auto=format&fit=crop&w=800&q=60" },
+      { id:3, title:"Rank • Warlord", price:"60k", category:"ranks", desc:"Warlord rank — 60k", img:"https://images.unsplash.com/photo-1546456073-6712f79251bb?auto=format&fit=crop&w=800&q=60" },
+      { id:4, title:"Rank • Overseer", price:"90k", category:"ranks", desc:"Overseer rank — 90k", img:"https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=60" },
+      { id:5, title:"Rank • Eternal", price:"100k", category:"ranks", desc:"Eternal rank — 100k", img:"https://images.unsplash.com/photo-1520975912779-6a6f3c8ae4a4?auto=format&fit=crop&w=800&q=60" },
+      { id:6, title:"Rank • Titan", price:"130k", category:"ranks", desc:"Titan rank — 130k", img:"https://images.unsplash.com/photo-1520975912779-6a6f3c8ae4a4?auto=format&fit=crop&w=800&q=60" }
     ];
 
     // State
@@ -471,7 +472,7 @@ html_content = """<!DOCTYPE html>
 
     function viewDetails(id){
       const p = products.find(x=>x.id===id);
-      alert(p.title + "\\n\\n" + p.desc + "\\nHarga: " + p.price);
+      alert(p.title + "\\n\\n" + p.desc + "\\nHarga: " + p.price + "\\nServer IP: play.nebulahc.my.id");
     }
 
     function addToCart(id){
@@ -542,7 +543,7 @@ html_content = """<!DOCTYPE html>
     function checkout(){
       if(cart.length===0){ alert('Cart kosong.'); return; }
       // Simulasi checkout simple
-      alert('Terima kasih! Pembayaran disimulasikan — detail pembelian akan dikirim (simulasi).');
+      alert('Terima kasih! Pembayaran disimulasikan — detail pembelian akan dikirim (simulasi).\\nServer IP: play.nebulahc.my.id');
       cart = [];
       saveCart();
       renderCartItems();
@@ -563,8 +564,9 @@ html_content = """<!DOCTYPE html>
 </html>
 """
 
-# Simpan file ke /mnt/data
-with open("/mnt/data/index.html", "w", encoding="utf-8") as f:
+# Write file
+path = "/mnt/data/index.html"
+with open(path, "w", encoding="utf-8") as f:
     f.write(html_content)
 
-"/mnt/data/index.html"
+path
