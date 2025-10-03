@@ -54,6 +54,14 @@
       padding:12px; border-radius:10px; margin:10px 0;
     }
     .ticket .status { font-size:12px; color:#0ff; }
+    .chat-box {
+      background:#222; padding:10px; border-radius:8px;
+      margin-top:10px; max-height:150px; overflow-y:auto;
+      font-size:14px;
+    }
+    .msg { margin:4px 0; }
+    .msg.admin { color:#6e00ff; }
+    .msg.user { color:#0ff; }
     /* Modal */
     .modal {
       position:fixed; top:0; left:0; right:0; bottom:0;
@@ -84,7 +92,7 @@
     <h2>Nebula Store</h2>
     <a onclick="showPage('store')">🛒 Store</a>
     <a onclick="showPage('tickets')">🎟 Tickets</a>
-    <a onclick="showPage('admin')">⚙️ Admin</a>
+    <a onclick="showPage('adminLogin')">⚙️ Admin</a>
   </div>
 
   <!-- Content -->
@@ -102,8 +110,16 @@
       <div id="ticketList"></div>
     </section>
 
-    <!-- Admin -->
-    <section id="admin" class="page">
+    <!-- Admin Login -->
+    <section id="adminLogin" class="page">
+      <h2>Login Admin</h2>
+      <input type="text" id="adminUser" placeholder="Username">
+      <input type="password" id="adminPass" placeholder="Password">
+      <button onclick="loginAdmin()">Login</button>
+    </section>
+
+    <!-- Admin Panel -->
+    <section id="adminPanel" class="page">
       <h2>Admin Panel</h2>
       <div>
         <input type="text" id="pName" placeholder="Nama Produk">
@@ -112,6 +128,8 @@
       </div>
       <h3>Daftar Produk</h3>
       <div id="adminProductList"></div>
+      <h3>Tickets</h3>
+      <div id="adminTicketList"></div>
     </section>
   </div>
 
@@ -136,6 +154,10 @@
   <div class="toast" id="toast"></div>
 
 <script>
+  // Admin credentials
+  const ADMIN_USER="admin", ADMIN_PASS="1234";
+  let adminLogged=false;
+
   // Navigation
   function showPage(id){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -184,8 +206,8 @@
           <button onclick="deleteProduct(${i})">Hapus</button>
         </div>`;
     });
+    renderAdminTickets();
   }
-  renderAdmin();
 
   function addProduct(){
     let n=document.getElementById("pName").value;
@@ -217,12 +239,28 @@
           Kategori: ${t.cat}<br>
           ${t.desc}<br>
           <span class="status">Status: ${t.status}</span><br>
+          <button onclick="replyTicket(${i},'user')">Balas</button>
+        </div>`;
+    });
+  }
+  renderTickets();
+
+  function renderAdminTickets(){
+    let list=document.getElementById("adminTicketList");
+    list.innerHTML="";
+    tickets.forEach((t,i)=>{
+      let chat=t.chat.map(m=>`<div class="msg ${m.from}"><b>${m.from}:</b> ${m.text}</div>`).join("");
+      list.innerHTML+=`
+        <div class="ticket">
+          <b>${t.user}</b> - ${t.cat} [${t.status}]<br>
+          <div class="chat-box">${chat}</div>
+          <input type="text" id="reply${i}" placeholder="Balas...">
+          <button onclick="sendReply(${i})">Kirim</button>
           <button onclick="setStatus(${i},'Closed')">Tutup</button>
           <button onclick="deleteTicket(${i})">Hapus</button>
         </div>`;
     });
   }
-  renderTickets();
 
   function openTicketModal(){ document.getElementById("ticketModal").style.display="flex"; }
   function closeTicketModal(){ document.getElementById("ticketModal").style.display="none"; }
@@ -233,14 +271,44 @@
     let c=document.getElementById('tCat').value;
     let d=document.getElementById('tDesc').value;
     if(u&&e&&d){
-      tickets.push({user:u,email:e,cat:c,desc:d,status:"Open"});
+      tickets.push({user:u,email:e,cat:c,desc:d,status:"Open",chat:[{from:"user",text:d}]});
       localStorage.setItem("tickets",JSON.stringify(tickets));
       renderTickets(); toast("Ticket terkirim!");
       closeTicketModal();
     } else toast("Isi semua field!");
   }
-  function setStatus(i,s){ tickets[i].status=s; localStorage.setItem("tickets",JSON.stringify(tickets)); renderTickets(); }
-  function deleteTicket(i){ tickets.splice(i,1); localStorage.setItem("tickets",JSON.stringify(tickets)); renderTickets(); toast("Ticket dihapus!"); }
+
+  function replyTicket(i,from){
+    let msg=prompt("Masukkan balasan:");
+    if(msg){
+      tickets[i].chat.push({from:from,text:msg});
+      localStorage.setItem("tickets",JSON.stringify(tickets));
+      renderTickets(); renderAdminTickets();
+    }
+  }
+  function sendReply(i){
+    let msg=document.getElementById("reply"+i).value;
+    if(msg){
+      tickets[i].chat.push({from:"admin",text:msg});
+      localStorage.setItem("tickets",JSON.stringify(tickets));
+      renderTickets(); renderAdminTickets();
+    }
+  }
+
+  function setStatus(i,s){ tickets[i].status=s; localStorage.setItem("tickets",JSON.stringify(tickets)); renderTickets(); renderAdminTickets(); }
+  function deleteTicket(i){ tickets.splice(i,1); localStorage.setItem("tickets",JSON.stringify(tickets)); renderTickets(); renderAdminTickets(); toast("Ticket dihapus!"); }
+
+  // Admin Login
+  function loginAdmin(){
+    let u=document.getElementById("adminUser").value;
+    let p=document.getElementById("adminPass").value;
+    if(u===ADMIN_USER && p===ADMIN_PASS){
+      adminLogged=true;
+      showPage("adminPanel");
+      renderAdmin();
+      toast("Login sukses!");
+    } else toast("Login gagal!");
+  }
 </script>
 </body>
 </html>
