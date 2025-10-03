@@ -1,425 +1,170 @@
-# Writing updated index.html with hidden admin password and product edit/delete features
-html_updated = r"""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Nebula Hardcore Store (Admin Improved)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nebula Hardcore Store</title>
   <style>
-    :root{
-      --bg:#0b0b0d;
-      --card:#0f1620;
-      --muted:#cfcfe0;
-      --accent:#8a2be2;
-      --accent-2:#9b59b6;
-      --glass: rgba(255,255,255,0.04);
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0;
+      background: #0a0a0f;
+      color: #fff;
+      text-align: center;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: 'Roboto', sans-serif;
-      background: radial-gradient(circle at 10% 10%, rgba(138,43,226,0.06), transparent 10%),
-                  radial-gradient(circle at 90% 90%, rgba(155,89,182,0.05), transparent 10%),
-                  var(--bg);
-      color:var(--muted);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      padding-bottom:80px;
+    header {
+      padding: 20px;
+      background: linear-gradient(90deg,#6e00ff,#00c3ff);
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 2px;
     }
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 28px;border-bottom:1px solid rgba(255,255,255,0.03);position:sticky;top:0;background: linear-gradient(180deg, rgba(11,11,13,0.85), rgba(11,11,13,0.6));backdrop-filter: blur(6px);z-index:100;}
-    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--muted);}
-    .logo{width:46px;height:46px;border-radius:10px;display:inline-grid;place-items:center;font-family:'Orbitron',sans-serif;font-weight:700;color:white;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 22px rgba(138,43,226,0.18);}
-    .brand .title{font-family:'Orbitron',sans-serif;font-weight:700;font-size:18px;letter-spacing:1px;}
-    .nav{display:flex;gap:10px;align-items:center;}
-    .nav a{color:var(--muted);text-decoration:none;padding:8px 14px;border-radius:10px;transition:all .18s ease;font-weight:500;}
-    .actions{display:flex;gap:10px;align-items:center;}
-    .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border:none;padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;box-shadow:0 6px 18px rgba(138,43,226,0.12);}
-    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 12px;border-radius:10px;cursor:pointer;}
-    main{padding:18px;max-width:1200px;margin:12px auto;}
-    .hero{display:grid;grid-template-columns:1fr 420px;gap:24px;margin-bottom:18px;}
-    .hero-left{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:18px;border:1px solid rgba(138,43,226,0.06);}
-    .hero-left h1{font-family:'Orbitron',sans-serif;margin:0 0 8px 0;color:white;}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;}
-    .card{background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.01));border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.03);transition:transform .18s ease, box-shadow .18s ease;display:flex;flex-direction:column;min-height:260px;}
-    .thumb{height:140px;border-radius:8px;background:linear-gradient(135deg, rgba(138,43,226,0.2), rgba(155,89,182,0.12));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;margin-bottom:12px;}
-    .price{font-weight:700;color:white;font-family:'Orbitron',sans-serif;font-size:18px;}
-    .meta{display:flex;align-items:center;justify-content:space-between;margin-top:auto;}
-    .cart-btn{position:fixed;right:18px;bottom:18px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border:none;padding:14px 16px;border-radius:999px;box-shadow:0 10px 30px rgba(138,43,226,0.18);cursor:pointer;z-index:110;display:flex;gap:8px;align-items:center;font-weight:700;}
-    .modal{position:fixed;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:200;}
-    .modal-card{width:720px;max-width:95%;background:linear-gradient(180deg, rgba(11,11,13,0.98), rgba(18,18,20,0.98));border-radius:12px;padding:18px;border:1px solid rgba(138,43,226,0.08);color:var(--muted);}
-    input,textarea,select{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:8px;color:var(--muted);width:100%;}
-    .admin-badge{background:rgba(138,43,226,0.12);color:var(--accent);padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;}
-    .orders-list{max-height:320px;overflow:auto;margin-top:8px;border-top:1px dashed rgba(255,255,255,0.04);padding-top:8px;}
-    .order-item{padding:8px;border-radius:8px;margin-bottom:8px;background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;gap:8px;align-items:flex-start;}
-    .small{font-size:13px;color:#bdbada;}
-    .chip{background:rgba(0,0,0,0.4);padding:6px 8px;border-radius:999px;font-weight:700;}
-    .hidden{display:none;}
-    .product-manage-list{max-height:220px;overflow:auto;border-top:1px dashed rgba(255,255,255,0.04);padding-top:8px;margin-top:8px;}
-    .product-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px;gap:8px;}
-    footer{text-align:center;margin-top:18px;color:#aaa;padding:12px;}
-    @media (max-width:900px){.hero{grid-template-columns:1fr;padding:12px}.modal-card{width:95%}}
+    .store {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background: #151522;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,.4);
+      transition: transform .3s;
+    }
+    .card:hover { transform: scale(1.05); }
+    .price { color: #00e0ff; font-size: 20px; margin: 10px 0; }
+    button {
+      padding: 10px 18px;
+      border: none; border-radius: 10px;
+      background: linear-gradient(90deg,#6e00ff,#00c3ff);
+      color: #fff; cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { opacity: 0.8; }
+
+    /* Admin Login */
+    #adminPanel, #loginBox, #ticketBox { display: none; }
+    .modal {
+      background: #111;
+      padding: 20px;
+      border-radius: 12px;
+      width: 320px;
+      margin: 50px auto;
+      box-shadow: 0 0 15px rgba(0,0,0,.6);
+    }
+    input, textarea, select {
+      width: 90%;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+    textarea { resize: none; height: 100px; }
+    .ticket {
+      background: #1a1a2a;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#"><div class="logo">NH</div><div><div class="title">Nebula Hardcore</div><div style="font-size:12px;color:#bdbada;margin-top:2px;">Official Store</div></div></a>
-    <nav class="nav"><a href="#" onclick="filterCategory('all')">All</a><a href="#" onclick="filterCategory('ranks')">Ranks</a></nav>
-    <div class="actions">
-      <div id="adminStatus"></div>
-      <button class="btn" id="btnOpenCart" onclick="openCart()"><i class="fa fa-shopping-cart"></i> <span id="cartCount">0</span></button>
-      <button class="ghost" id="btnLogin" onclick="openLoginModal()">Admin Login</button>
-    </div>
-  </header>
+  <header>Nebula Hardcore Store</header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-left">
-        <h1>Nebula Hardcore - Official Store</h1>
-        <p>Beli rank, cosmetic, dan item eksklusif untuk server <strong>play.nebulahc.my.id</strong>. Proses via WhatsApp. Admin bisa login untuk melihat pesanan & generate commands.</p>
-        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
-          <div class="chip">IP: play.nebulahc.my.id</div>
-          <div class="chip">Support: WhatsApp</div>
-        </div>
-      </div>
-      <div class="hero-right">
-        <div class="hero-card">
-          <div class="big">Featured Pack</div>
-          <p>Paket bundle terbaik untuk pemain kompetitif.</p>
-          <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;">
-            <button class="btn" onclick="quickAdd(1)">Buy Now</button>
-            <button class="ghost" onclick="openCart()">Lihat Cart</button>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- Produk Store -->
+  <section class="store" id="store">
+    <div class="card"><h3>Voidling</h3><p class="price">Rp15.000</p><button>Beli</button></div>
+    <div class="card"><h3>Phantom</h3><p class="price">Rp30.000</p><button>Beli</button></div>
+    <div class="card"><h3>Warlord</h3><p class="price">Rp60.000</p><button>Beli</button></div>
+    <div class="card"><h3>Overseer</h3><p class="price">Rp90.000</p><button>Beli</button></div>
+    <div class="card"><h3>Eternal</h3><p class="price">Rp100.000</p><button>Beli</button></div>
+    <div class="card"><h3>Titan</h3><p class="price">Rp130.000</p><button>Beli</button></div>
+  </section>
 
-    <section class="catalog">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <h2 style="margin:0">Store Catalog</h2>
-        <div class="small">Klik <strong>Tambah</strong> untuk memasukkan ke cart, lalu <strong>Checkout</strong> untuk chat WA admin.</div>
-      </div>
-      <div class="grid" id="productGrid"></div>
-    </section>
-  </main>
+  <br>
+  <button onclick="showLogin()">Login Admin</button>
+  <button onclick="showTicket()">Buat Ticket</button>
 
-  <footer>&copy; 2025 Nebula Hardcore • play.nebulahc.my.id</footer>
-
-  <!-- Cart Modal (includes input untuk Minecraft username) -->
-  <div id="cartModal" class="modal hidden">
-    <div class="modal-card">
-      <h3 style="margin-top:0">Your Cart</h3>
-      <div id="cartItems" style="max-height:240px;overflow:auto;"></div>
-
-      <div style="margin-top:12px; display:flex; gap:8px; flex-direction:column;">
-        <label class="small">Minecraft Username</label>
-        <input id="mcName" placeholder="Contoh: ProGamer123" autocomplete="off">
-      </div>
-
-      <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
-        <button class="ghost" onclick="closeCart()">Continue</button>
-        <button class="btn" onclick="checkout()">Checkout via WhatsApp</button>
-      </div>
-    </div>
+  <!-- Login Box -->
+  <div id="loginBox" class="modal">
+    <h2>Admin Login</h2>
+    <input type="text" id="user" placeholder="Username">
+    <input type="password" id="pass" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p style="font-size:12px;">Default: <b>admin / nebula123</b></p>
   </div>
 
-  <!-- Admin Login Modal -->
-  <div id="loginModal" class="modal hidden">
-    <div class="modal-card">
-      <h3 style="margin-top:0">Admin Login</h3>
-      <div style="display:grid;gap:8px;">
-        <input id="adminUser" placeholder="Username" autocomplete="off">
-        <input id="adminPass" placeholder="Password" type="password" autocomplete="new-password">
-        <div style="display:flex;gap:8px;justify-content:flex-end;">
-          <button class="ghost" onclick="closeLoginModal()">Batal</button>
-          <button class="btn" onclick="doAdminLogin()">Login</button>
-        </div>
-        <div class="small" style="margin-top:8px">Default admin username: <strong>admin</strong> (password disembunyikan)</div>
-      </div>
+  <!-- Admin Panel -->
+  <div id="adminPanel">
+    <h2>Admin Panel</h2>
+    <div>
+      <input type="text" id="newProduct" placeholder="Nama Produk">
+      <input type="text" id="newPrice" placeholder="Harga">
+      <button onclick="addProduct()">Tambah Produk</button>
     </div>
+    <h3>Daftar Produk</h3>
+    <div id="productList"></div>
+    <h3>Ticket Masuk</h3>
+    <div id="ticketList"></div>
   </div>
 
-  <!-- Admin Panel Modal -->
-  <div id="adminPanel" class="modal hidden">
-    <div class="modal-card" style="max-width:900px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="margin:0">Admin Panel</h3>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button class="ghost" onclick="logoutAdmin()">Logout</button>
-          <button class="btn" onclick="closeAdminPanel()">Close</button>
-        </div>
-      </div>
-
-      <hr style="border:none;border-top:1px dashed rgba(255,255,255,0.04);margin:12px 0">
-
-      <div style="display:grid;grid-template-columns:1fr 360px;gap:12px;">
-        <div>
-          <h4 style="margin:0 0 8px 0">Orders</h4>
-          <div id="ordersList" class="orders-list"></div>
-        </div>
-
-        <div>
-          <h4 style="margin:0 0 8px 0">Manage Products</h4>
-          <div style="display:grid;gap:8px;">
-            <input id="newTitle" placeholder="Nama produk (mis. Rank • Zealot)">
-            <input id="newPrice" placeholder="Harga (angka saja)">
-            <input id="newImg" placeholder="URL gambar (opsional)">
-            <select id="newCategory"><option value="ranks">ranks</option><option value="cosmetic">cosmetic</option><option value="keys">keys</option></select>
-            <div style="display:flex;gap:8px;justify-content:flex-end;">
-              <button class="ghost" onclick="resetNewProduct()">Reset</button>
-              <button class="btn" id="addProductBtn" onclick="addProduct()">Tambah Produk</button>
-            </div>
-            <div class="small">Tambah produk akan muncul di katalog untuk semua pengguna.</div>
-
-            <div class="product-manage-list" id="productManageList"></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
+  <!-- Ticket Form -->
+  <div id="ticketBox" class="modal">
+    <h2>Buat Ticket</h2>
+    <input type="text" id="tUser" placeholder="Username">
+    <input type="email" id="tEmail" placeholder="Email">
+    <select id="tCat">
+      <option>Rank</option>
+      <option>Pembayaran</option>
+      <option>Lainnya</option>
+    </select>
+    <textarea id="tDesc" placeholder="Deskripsi masalah..."></textarea>
+    <button onclick="submitTicket()">Kirim Ticket</button>
   </div>
 
-  <button class="cart-btn" title="Cart" onclick="openCart()"><i class="fa fa-shopping-cart"></i> <span id="cartText">Cart</span></button>
+<script>
+  // ADMIN LOGIN
+  function showLogin(){ document.getElementById('loginBox').style.display='block'; }
+  function login(){
+    let u=document.getElementById('user').value;
+    let p=document.getElementById('pass').value;
+    if(u=="admin" && p=="nebula123"){
+      document.getElementById('loginBox').style.display='none';
+      document.getElementById('adminPanel').style.display='block';
+    } else { alert("Login gagal!"); }
+  }
 
-  <script>
-    // Initial products (ranks)
-    let products = [
-      { id:1, title:"Rank • Voidling", price:15000, category:"ranks", desc:"Voidling rank — 15k", img:"https://images.unsplash.com/photo-1605902711622-cfb43c44367e?auto=format&fit=crop&w=800&q=60" },
-      { id:2, title:"Rank • Phantom", price:30000, category:"ranks", desc:"Phantom rank — 30k", img:"https://images.unsplash.com/photo-1546443046-ed1ce6ffd1d6?auto=format&fit=crop&w=800&q=60" },
-      { id:3, title:"Rank • Warlord", price:60000, category:"ranks", desc:"Warlord rank — 60k", img:"https://images.unsplash.com/photo-1546456073-6712f79251bb?auto=format&fit=crop&w=800&q=60" },
-      { id:4, title:"Rank • Overseer", price:90000, category:"ranks", desc:"Overseer rank — 90k", img:"https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=60" },
-      { id:5, title:"Rank • Eternal", price:100000, category:"ranks", desc:"Eternal rank — 100k", img:"https://images.unsplash.com/photo-1520975912779-6a6f3c8ae4a4?auto=format&fit=crop&w=800&q=60" },
-      { id:6, title:"Rank • Titan", price:130000, category:"ranks", desc:"Titan rank — 130k", img:"https://images.unsplash.com/photo-1520975912779-6a6f3c8ae4a4?auto=format&fit=crop&w=800&q=60" }
-    ];
-
-    // Load additional products from localStorage if any
-    const storedProducts = JSON.parse(localStorage.getItem('nh_products') || 'null');
-    if(storedProducts && Array.isArray(storedProducts)) products = storedProducts;
-
-    // State
-    let activeCategory = 'all';
-    let cart = JSON.parse(localStorage.getItem('nh_cart') || '[]');
-    let editingProductId = null; // for edit mode in manage products
-
-    // Admin credentials (default)
-    const ADMIN_USER = 'admin';
-    const ADMIN_PASS = 'nebula123';
-
-    // Utility
-    function formatRupiah(n){ return 'Rp' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
-
-    // DOM refs
-    const productGrid = document.getElementById('productGrid');
-    const categoriesEl = document.getElementById('categories');
-    const cartCount = document.getElementById('cartCount');
-    const cartText = document.getElementById('cartText');
-    const adminStatus = document.getElementById('adminStatus');
-    const productManageList = document.getElementById('productManageList');
-
-    // Render functions (same as before)
-    function uniqueCategories(){ const cats = new Set(products.map(p=>p.category)); return ['all', ...Array.from(cats)]; }
-    function renderCategories(){ if(!categoriesEl) return; categoriesEl.innerHTML=''; uniqueCategories().forEach(c=>{ const btn=document.createElement('button'); btn.className='cat'+(c===activeCategory?' active':''); btn.textContent = c==='all' ? 'All' : c.charAt(0).toUpperCase()+c.slice(1); btn.onclick = ()=>filterCategory(c); categoriesEl.appendChild(btn); }) }
-    function renderProducts(){ productGrid.innerHTML=''; const q = document.getElementById('q') ? document.getElementById('q').value.toLowerCase() : ''; products.filter(p=> (activeCategory==='all' || p.category===activeCategory) && (p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)) ).forEach(p=>{ const card=document.createElement('div'); card.className='card'; card.innerHTML = `
-        <div class="thumb"><img src="${p.img}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-weight:700">${p.title}</strong><div class="price">${formatRupiah(p.price)}</div></div>
-        <p style="margin:8px 0 0;color:#d7d4f6;opacity:.9">${p.desc}</p>
-        <div class="meta"><div style="font-size:13px;color:#bdbada">${p.category.toUpperCase()}</div><div style="display:flex;gap:8px;"><button class="ghost" onclick="viewDetails(${p.id})">Detail</button><button class="btn" onclick="addToCart(${p.id})">Tambah</button></div></div>`; productGrid.appendChild(card); }) }
-    function renderCartCount(){ const total = cart.reduce((s,i)=>s+i.qty,0); cartCount.textContent = total; cartText.textContent = 'Cart ('+total+')'; }
-
-    // Cart functions
-    function addToCart(id){ const p = products.find(x=>x.id===id); cart.push({...p, qty:1}); saveCart(); renderCartCount(); openCart(); }
-    function quickAdd(id){ addToCart(id); }
-    function saveCart(){ localStorage.setItem('nh_cart', JSON.stringify(cart)); }
-    function renderCartItems(){ const el = document.getElementById('cartItems'); el.innerHTML=''; if(cart.length===0){ el.innerHTML = '<p class="small" style="opacity:.9">Cart kosong.</p>'; return; } cart.forEach((it, idx)=>{ const div=document.createElement('div'); div.className='cart-item'; div.innerHTML = `
-        <div style="width:64px;height:64px;border-radius:8px;overflow:hidden;"><img src="${it.img}" style="width:100%;height:100%;object-fit:cover"></div>
-        <div style="flex:1;text-align:left;"><div style="font-weight:700">${it.title}</div><div style="font-size:13px;color:#bdbada">${formatRupiah(it.price)}</div></div>
-        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;"><div style="font-weight:700">${it.qty}</div><div style="display:flex;gap:6px;"><button class="ghost" onclick="dec(${idx})">-</button><button class="btn" onclick="inc(${idx})">+</button></div><button class="ghost" style="margin-top:6px;" onclick="removeItem(${idx})">Remove</button></div>`; el.appendChild(div); }) }
-    function openCart(){ renderCartItems(); document.getElementById('cartModal').classList.remove('hidden'); }
-    function closeCart(){ document.getElementById('cartModal').classList.add('hidden'); }
-    function inc(i){ cart[i].qty++; saveCart(); renderCartItems(); renderCartCount(); }
-    function dec(i){ cart[i].qty = Math.max(1, cart[i].qty-1); saveCart(); renderCartItems(); renderCartCount(); }
-    function removeItem(i){ cart.splice(i,1); saveCart(); renderCartItems(); renderCartCount(); }
-
-    // Checkout: save order to localStorage orders and open WhatsApp
-    function checkout(){
-      if(cart.length===0){ alert('Cart kosong.'); return; }
-      const mcName = document.getElementById('mcName').value.trim();
-      if(!mcName){ alert('Masukkan Minecraft username dulu.'); return; }
-
-      let total = 0;
-      let itemsText = '';
-      const itemsData = [];
-      cart.forEach(c=>{ itemsText += `- ${c.title} (${formatRupiah(c.price)}) x${c.qty}\n`; itemsData.push({title:c.title, price:c.price, qty:c.qty}); total += c.price * c.qty; });
-
-      const msg = `Bang saya mau beli rank dari Nebula Hardcore\nUsername: ${mcName}\n\nDaftar item:\n${itemsText}\nTotal: ${formatRupiah(total)}\nServer: play.nebulahc.my.id\nTerima kasih.`;
-      // Save order locally so admin can see
-      const orders = JSON.parse(localStorage.getItem('nh_orders') || '[]');
-      const order = { id: Date.now(), mcName, items: itemsData, total, status:'pending', created:new Date().toISOString() };
-      orders.unshift(order);
-      localStorage.setItem('nh_orders', JSON.stringify(orders));
-      // Clear cart
-      cart = []; saveCart(); renderCartCount(); renderCartItems();
-      closeCart();
-      // Open WhatsApp
-      const waNumber = '0089677559943';
-      const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
-      window.open(waUrl,'_blank');
-      // Refresh orders list if admin panel open
-      renderOrdersList();
+  // PRODUCT SYSTEM
+  function addProduct(){
+    let name=document.getElementById('newProduct').value;
+    let price=document.getElementById('newPrice').value;
+    if(name && price){
+      let div=document.createElement("div");
+      div.className="ticket";
+      div.innerHTML=`<b>${name}</b> - Rp${price} <button onclick="this.parentElement.remove()">Hapus</button>`;
+      document.getElementById("productList").appendChild(div);
     }
+  }
 
-    // Admin login modal controls
-    function openLoginModal(){ document.getElementById('loginModal').classList.remove('hidden'); }
-    function closeLoginModal(){ document.getElementById('loginModal').classList.add('hidden'); }
-    function doAdminLogin(){
-      const u = document.getElementById('adminUser').value.trim();
-      const p = document.getElementById('adminPass').value;
-      if(u === ADMIN_USER && p === ADMIN_PASS){
-        sessionStorage.setItem('nh_admin', '1');
-        document.getElementById('adminStatus').innerHTML = '<span class="admin-badge">Admin</span>';
-        closeLoginModal();
-        openAdminPanel();
-      } else {
-        alert('Kredensial salah.');
-      }
-    }
-    function logoutAdmin(){ sessionStorage.removeItem('nh_admin'); document.getElementById('adminStatus').innerHTML=''; closeAdminPanel(); alert('Logout sukses.'); }
-
-    // Admin panel controls
-    function openAdminPanel(){ if(sessionStorage.getItem('nh_admin')){ document.getElementById('adminPanel').classList.remove('hidden'); renderOrdersList(); renderProductManageList(); } else { alert('Harus login sebagai admin.'); openLoginModal(); } }
-    function closeAdminPanel(){ document.getElementById('adminPanel').classList.add('hidden'); }
-
-    // Orders management
-    function renderOrdersList(){
-      const orders = JSON.parse(localStorage.getItem('nh_orders') || '[]');
-      const el = document.getElementById('ordersList'); el.innerHTML='';
-      if(orders.length===0){ el.innerHTML = '<div class="small">Belum ada pesanan.</div>'; return; }
-      orders.forEach(o=>{
-        const div = document.createElement('div'); div.className='order-item';
-        let itemsHtml = ''; o.items.forEach(it=>{ itemsHtml += `${it.title} x${it.qty} (${formatRupiah(it.price)})\n`; });
-        div.innerHTML = `<div style="flex:1"><div style="display:flex;gap:8px;align-items:center;"><strong>${o.mcName}</strong><span class="small">• ${new Date(o.created).toLocaleString()}</span></div><div class="small" style="white-space:pre-line;margin-top:6px">${itemsHtml}</div><div class="small" style="margin-top:6px">Total: ${formatRupiah(o.total)}</div><div class="small" style="margin-top:6px">Status: <strong>${o.status}</strong></div></div>
-          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
-            <button class="btn" onclick="generateCommands(${o.id})">Copy Commands</button>
-            <button class="ghost" onclick="markFulfilled(${o.id})">Mark Fulfilled</button>
-            <button class="ghost" onclick="deleteOrder(${o.id})">Delete</button>
-          </div>`;
-        el.appendChild(div);
-      });
-    }
-
-    function generateCommands(orderId){
-      const orders = JSON.parse(localStorage.getItem('nh_orders') || '[]');
-      const o = orders.find(x=>x.id===orderId);
-      if(!o) return alert('Order tidak ditemukan');
-      let cmdText = `# Commands for ${o.mcName}\n`;
-      o.items.forEach(it=>{
-        const rankPart = it.title.split('•')[1] ? it.title.split('•')[1].trim().toLowerCase().split(' ')[0] : it.title.replace(/\s+/g,'').toLowerCase();
-        cmdText += `lp user ${o.mcName} parent set ${rankPart}\n`;
-      });
-      navigator.clipboard.writeText(cmdText).then(()=>{ alert('Commands disalin ke clipboard. Paste di console RCON atau server.'); }).catch(()=>{ prompt('Copy commands (manual):', cmdText); });
-    }
-
-    function markFulfilled(orderId){
-      const orders = JSON.parse(localStorage.getItem('nh_orders') || '[]');
-      const idx = orders.findIndex(x=>x.id===orderId); if(idx===-1) return;
-      orders[idx].status = 'fulfilled'; localStorage.setItem('nh_orders', JSON.stringify(orders)); renderOrdersList(); alert('Order ditandai fulfilled.'); }
-
-    function deleteOrder(orderId){
-      if(!confirm('Hapus order ini?')) return;
-      let orders = JSON.parse(localStorage.getItem('nh_orders') || '[]');
-      orders = orders.filter(x=>x.id!==orderId); localStorage.setItem('nh_orders', JSON.stringify(orders)); renderOrdersList();
-    }
-
-    // Product management (admin) with edit & delete
-    function renderProductManageList(){
-      productManageList.innerHTML = '';
-      products.forEach(p=>{
-        const div = document.createElement('div'); div.className='product-item';
-        div.innerHTML = `<div style="flex:1"><strong>${p.title}</strong><div class="small">${formatRupiah(p.price)} • ${p.category}</div></div>
-          <div style="display:flex;gap:8px;"><button class="ghost" onclick="editProduct(${p.id})">Edit</button><button class="ghost" onclick="removeProduct(${p.id})">Hapus</button></div>`;
-        productManageList.appendChild(div);
-      });
-    }
-
-    function addProduct(){
-      if(!sessionStorage.getItem('nh_admin')){ alert('Harus login admin.'); return; }
-      const title = document.getElementById('newTitle').value.trim();
-      const priceRaw = document.getElementById('newPrice').value.trim();
-      const price = parseInt(priceRaw);
-      const img = document.getElementById('newImg').value.trim() || 'https://images.unsplash.com/photo-1605902711622-cfb43c44367e?auto=format&fit=crop&w=800&q=60';
-      const category = document.getElementById('newCategory').value;
-      if(!title || !price || isNaN(price)){ alert('Isi nama produk dan harga yang valid.'); return; }
-
-      if(editingProductId){
-        // update existing product
-        const idx = products.findIndex(x=>x.id===editingProductId);
-        if(idx!==-1){
-          products[idx].title = title;
-          products[idx].price = price;
-          products[idx].img = img;
-          products[idx].category = category;
-          products[idx].desc = title;
-          alert('Produk diperbarui.');
-        }
-        editingProductId = null;
-        document.getElementById('addProductBtn').textContent = 'Tambah Produk';
-      } else {
-        const id = Date.now();
-        products.unshift({id,title,price,category,desc:title,img});
-        alert('Produk ditambahkan.');
-      }
-
-      localStorage.setItem('nh_products', JSON.stringify(products));
-      renderProducts(); renderCategories(); renderProductManageList();
-      resetNewProduct();
-    }
-
-    function editProduct(id){
-      if(!sessionStorage.getItem('nh_admin')){ alert('Harus login admin.'); return; }
-      const p = products.find(x=>x.id===id);
-      if(!p) return;
-      editingProductId = id;
-      document.getElementById('newTitle').value = p.title;
-      document.getElementById('newPrice').value = p.price;
-      document.getElementById('newImg').value = p.img;
-      document.getElementById('newCategory').value = p.category;
-      document.getElementById('addProductBtn').textContent = 'Simpan Perubahan';
-      // ensure admin panel shows
-      openAdminPanel();
-    }
-
-    function removeProduct(id){
-      if(!confirm('Hapus produk ini?')) return;
-      products = products.filter(x=>x.id!==id);
-      localStorage.setItem('nh_products', JSON.stringify(products));
-      renderProducts(); renderCategories(); renderProductManageList();
-      alert('Produk dihapus.');
-    }
-
-    function resetNewProduct(){ document.getElementById('newTitle').value=''; document.getElementById('newPrice').value=''; document.getElementById('newImg').value=''; document.getElementById('newCategory').value='ranks'; editingProductId = null; document.getElementById('addProductBtn').textContent = 'Tambah Produk'; }
-
-    // Simple helpers
-    function viewDetails(id){ const p = products.find(x=>x.id===id); alert(`${p.title}\n\n${p.desc}\nHarga: ${formatRupiah(p.price)}\nServer IP: play.nebulahc.my.id`); }
-    function filterCategory(c){ activeCategory=c; renderCategories(); renderProducts(); }
-    function searchItems(){ renderProducts(); }
-
-    // On load: render
-    renderCategories();
-    renderProducts();
-    renderCartCount();
-    if(sessionStorage.getItem('nh_admin')) adminStatus.innerHTML = '<span class="admin-badge">Admin</span>';
-    // admin badge clickable to open panel
-    adminStatus.addEventListener('click', ()=>{ if(sessionStorage.getItem('nh_admin')) openAdminPanel(); });
-
-  </script>
+  // TICKET SYSTEM
+  function showTicket(){ document.getElementById('ticketBox').style.display='block'; }
+  function submitTicket(){
+    let u=document.getElementById('tUser').value;
+    let e=document.getElementById('tEmail').value;
+    let c=document.getElementById('tCat').value;
+    let d=document.getElementById('tDesc').value;
+    if(u && e && d){
+      let div=document.createElement("div");
+      div.className="ticket";
+      div.innerHTML=`<b>${u}</b> (${e})<br>Kategori: ${c}<br>${d}`;
+      document.getElementById("ticketList").appendChild(div);
+      alert("Ticket berhasil dikirim!");
+      document.getElementById('ticketBox').style.display='none';
+    } else { alert("Isi semua field!"); }
+  }
+</script>
 </body>
 </html>
-"""
-
-path = "/mnt/data/index.html"
-with open(path, "w", encoding="utf-8") as f:
-    f.write(html_updated)
-
-"/mnt/data/index.html"
