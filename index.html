@@ -1,324 +1,570 @@
-<!DOCTYPE html>
+# Membuat file index.html bergaya toko (inspirasi dari store.minesive.com) dengan nama "Nebula Hardcore"
+html_content = """<!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEBULATIERS Rankings - Overall</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(155, 89, 182, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 10%, rgba(138, 43, 226, 0.1) 0%, transparent 40%);
-            color: #e0e0e0;
-            line-height: 1.6;
-            overflow-x: hidden;
-            animation: fadeIn 1s ease-in;
-            position: relative;
-        }
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, rgba(138, 43, 226, 0.3), transparent),
-                radial-gradient(2px 2px at 40px 70px, rgba(155, 89, 182, 0.3), transparent),
-                radial-gradient(1px 1px at 90px 40px, rgba(138, 43, 226, 0.4), transparent),
-                radial-gradient(1px 1px at 130px 80px, rgba(155, 89, 182, 0.4), transparent);
-            pointer-events: none;
-            animation: sparkle 3s linear infinite;
-            z-index: -1;
-        }
-        @keyframes sparkle {
-            0% { transform: translateY(0px) rotate(0deg); }
-            100% { transform: translateY(-20px) rotate(360deg); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
-            color: #8a2be2;
-            text-align: center;
-            padding: 50px 20px;
-            box-shadow: 0 4px 20px rgba(138, 43, 226, 0.3);
-            position: relative;
-            font-family: 'Orbitron', monospace;
-            overflow: hidden;
-        }
-        header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: repeating-conic-gradient(from 0deg, transparent, transparent 10px, rgba(138,43,226,0.05) 10px, rgba(138,43,226,0.05) 20px);
-            animation: rotate 25s linear infinite;
-        }
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        header h1 {
-            font-size: 3.5em;
-            margin: 0;
-            text-shadow: 0 0 20px #8a2be2, 0 0 40px #8a2be2, 0 0 60px #9b59b6;
-            letter-spacing: 3px;
-            position: relative;
-            z-index: 1;
-        }
-        header p {
-            font-size: 1.3em;
-            margin: 15px 0 0;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-        }
-        nav {
-            background-color: rgba(26, 26, 26, 0.9);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 3px solid #8a2be2;
-            backdrop-filter: blur(10px);
-        }
-        nav a {
-            color: #e0e0e0;
-            margin: 0 15px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.2em;
-            padding: 12px 24px;
-            border: 2px solid transparent;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            font-family: 'Orbitron', monospace;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, transparent 0%, rgba(138, 43, 226, 0.05) 100%);
-        }
-        nav a:hover {
-            color: #8a2be2;
-            background: linear-gradient(135deg, rgba(138, 43, 226, 0.15) 0%, rgba(155, 89, 182, 0.15) 100%);
-            border-color: #8a2be2;
-            box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
-            transform: scale(1.05) translateY(-2px);
-        }
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 30px;
-            background: rgba(26, 26, 26, 0.8);
-            border-radius: 20px;
-            box-shadow: 0 0 40px rgba(138, 43, 226, 0.25);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(138, 43, 226, 0.2);
-        }
-        .server-info {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 25px;
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            border-radius: 15px;
-            border: 2px solid #8a2be2;
-            box-shadow: 0 4px 20px rgba(138, 43, 226, 0.2);
-        }
-        .server-info h2 {
-            color: #8a2be2;
-            margin: 0;
-            font-family: 'Orbitron', monospace;
-            font-size: 1.8em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            text-shadow: 0 0 10px #8a2be2;
-        }
-        .server-info h2 i { font-size: 1.5em; }
-        .server-info p {
-            margin: 10px 0 0;
-            opacity: 0.8;
-            font-style: italic;
-        }
-        .tier-section {
-            margin-bottom: 50px;
-            animation: slideIn 0.5s ease-out;
-        }
-        @keyframes slideIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .tier-section h2 {
-            color: #8a2be2;
-            border-bottom: 3px solid #9b59b6;
-            padding-bottom: 15px;
-            font-family: 'Orbitron', monospace;
-            font-size: 2em;
-            text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 0 0 15px #8a2be2;
-        }
-        .rankings {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-        }
-        .rank-item {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-            transition: all 0.4s ease;
-            border: 1px solid rgba(138, 43, 226, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        .rank-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(138,43,226,0.2), transparent);
-            transition: left 0.6s;
-        }
-        .rank-item:hover::before { left: 100%; }
-        .rank-item:hover {
-            transform: translateY(-8px) scale(1.03);
-            box-shadow: 0 12px 35px rgba(138, 43, 226, 0.5);
-            border-color: #8a2be2;
-        }
-        .rank-item h3 {
-            margin: 0 0 12px;
-            color: #8a2be2;
-            font-family: 'Orbitron', monospace;
-            font-size: 1.6em;
-            text-shadow: 0 0 5px #8a2be2;
-        }
-        .rank-item p {
-            margin: 8px 0;
-            opacity: 0.9;
-        }
-        .rank-icon {
-            font-size: 2.2em;
-            margin-bottom: 12px;
-            text-shadow: 0 0 10px currentColor;
-        }
-        .tier-icon {
-            font-size: 1.2em;
-            margin-left: 5px;
-        }
-        .tier-ht { color: #8a2be2; text-shadow: 0 0 10px #8a2be2; }
-        .tier-lt { color: #9b59b6; text-shadow: 0 0 10px #9b59b6; }
-        .rank-gold { color: #ffd700; text-shadow: 0 0 15px #ffd700; }
-        .rank-silver { color: #c0c0c0; text-shadow: 0 0 15px #c0c0c0; }
-        .rank-bronze { color: #cd7f32; text-shadow: 0 0 15px #cd7f32; }
-        footer {
-            text-align: center;
-            padding: 20px;
-            background: rgba(26, 26, 26, 0.9);
-            color: #e0e0e0;
-            margin-top: 30px;
-            border-top: 3px solid #8a2be2;
-            font-family: 'Roboto', sans-serif;
-        }
-        .placeholder-note {
-            text-align: center;
-            margin-top: 30px;
-            padding: 15px;
-            background: rgba(155, 89, 182, 0.15);
-            border-radius: 10px;
-            border: 1px solid #9b59b6;
-            opacity: 0.9;
-        }
-        @media (max-width: 768px) {
-            header h1 { font-size: 2.5em; }
-            nav a { margin: 5px; padding: 10px 18px; font-size: 1em; }
-            .rankings { grid-template-columns: 1fr; gap: 15px; }
-            .container { padding: 20px; margin: 15px; }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nebula Hardcore Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{
+      --bg:#0b0b0d;
+      --card:#0f1620;
+      --muted:#cfcfe0;
+      --accent:#8a2be2;
+      --accent-2:#9b59b6;
+      --glass: rgba(255,255,255,0.04);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'Roboto', sans-serif;
+      background: radial-gradient(circle at 10% 10%, rgba(138,43,226,0.06), transparent 10%),
+                  radial-gradient(circle at 90% 90%, rgba(155,89,182,0.05), transparent 10%),
+                  var(--bg);
+      color:var(--muted);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-bottom:80px;
+    }
+
+    /* Header */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:16px 28px;
+      border-bottom:1px solid rgba(255,255,255,0.03);
+      position:sticky;
+      top:0;
+      background: linear-gradient(180deg, rgba(11,11,13,0.8), rgba(11,11,13,0.6));
+      backdrop-filter: blur(6px);
+      z-index:100;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      color:var(--muted);
+    }
+    .logo {
+      width:46px;
+      height:46px;
+      border-radius:10px;
+      display:inline-grid;
+      place-items:center;
+      font-family:'Orbitron',sans-serif;
+      font-weight:700;
+      color:white;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 6px 22px rgba(138,43,226,0.18);
+    }
+    .brand .title{
+      font-family:'Orbitron',sans-serif;
+      font-weight:700;
+      font-size:18px;
+      letter-spacing:1px;
+    }
+    .nav{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .nav a{
+      color:var(--muted);
+      text-decoration:none;
+      padding:8px 14px;
+      border-radius:10px;
+      transition:all .18s ease;
+      font-weight:500;
+    }
+    .nav a:hover{ color: white; transform:translateY(-2px); box-shadow:0 6px 18px rgba(138,43,226,0.12) }
+
+    .search{
+      margin-left:12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      background:var(--glass);
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .search input{
+      background:transparent;
+      border:none;
+      outline:none;
+      color:var(--muted);
+      width:220px;
+      font-size:14px;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .btn{
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;
+      border:none;
+      padding:8px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow:0 6px 18px rgba(138,43,226,0.12);
+    }
+    .ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--muted);
+      padding:8px 12px;
+      border-radius:10px;
+      cursor:pointer;
+    }
+
+    /* Hero */
+    .hero{
+      max-width:1200px;
+      margin:28px auto;
+      padding:28px;
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:24px;
+      align-items:center;
+    }
+    .hero-left{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:16px;
+      padding:24px;
+      border:1px solid rgba(138,43,226,0.06);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    }
+    .hero-left h1{
+      margin:0 0 12px 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size:36px;
+      color:white;
+      letter-spacing:1px;
+      text-shadow:0 6px 30px rgba(138,43,226,0.12);
+    }
+    .hero-left p{ margin:0 0 18px 0; color: #cfcfe0; opacity:.9; }
+    .features{ display:flex; gap:12px; flex-wrap:wrap; }
+    .feature{
+      background: rgba(255,255,255,0.02);
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.03);
+      font-weight:500;
+    }
+
+    .hero-right{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .hero-card{
+      width:100%;
+      background: linear-gradient(180deg, rgba(138,43,226,0.06), rgba(155,89,182,0.04));
+      border-radius:14px;
+      padding:16px;
+      border:1px solid rgba(138,43,226,0.08);
+      text-align:center;
+      box-shadow:0 8px 30px rgba(138,43,226,0.06);
+    }
+    .hero-card .big{
+      font-size:28px;
+      font-weight:700;
+      color:white;
+    }
+    .hero-card p{ margin:8px 0 12px; color:#e9e9ff; opacity:.95; }
+
+    /* Catalog */
+    .catalog{
+      max-width:1200px;
+      margin:18px auto;
+      padding:0 18px 40px;
+    }
+    .catalog-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .categories{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .cat{
+      background:transparent;
+      color:var(--muted);
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.03);
+      cursor:pointer;
+      font-weight:600;
+    }
+    .cat.active{
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;
+      box-shadow:0 8px 20px rgba(138,43,226,0.12);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap:18px;
+    }
+    .card{
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding:14px;
+      border:1px solid rgba(255,255,255,0.03);
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .card:hover{ transform:translateY(-8px); box-shadow:0 20px 60px rgba(0,0,0,0.6) }
+    .thumb{
+      height:120px;
+      border-radius:8px;
+      background:linear-gradient(135deg, rgba(138,43,226,0.2), rgba(155,89,182,0.12));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-weight:700;
+      margin-bottom:12px;
+      font-family:'Orbitron',sans-serif;
+      overflow:hidden;
+      position:relative;
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .price{
+      font-weight:700;
+      color:white;
+      font-family:'Orbitron',sans-serif;
+      font-size:18px;
+    }
+    .meta{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:10px; }
+
+    /* Cart */
+    .cart-btn{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;
+      border:none;
+      padding:14px 16px;
+      border-radius:999px;
+      box-shadow:0 10px 30px rgba(138,43,226,0.18);
+      cursor:pointer;
+      z-index:110;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      font-weight:700;
+    }
+
+    .modal{
+      position:fixed;
+      left:0; top:0; right:0; bottom:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,0.6);
+      z-index:200;
+    }
+    .modal-card{
+      width:420px;
+      max-width:95%;
+      background:linear-gradient(180deg, rgba(11,11,13,0.98), rgba(18,18,20,0.98));
+      border-radius:12px;
+      padding:18px;
+      border:1px solid rgba(138,43,226,0.08);
+    }
+    .cart-item{ display:flex; gap:12px; align-items:center; padding:10px 0; border-bottom:1px dashed rgba(255,255,255,0.03) }
+    .cart-item:last-child{ border-bottom:none }
+
+    /* Footer */
+    footer{
+      max-width:1200px;
+      margin:30px auto;
+      padding:18px;
+      text-align:center;
+      color:var(--muted);
+      opacity:0.9;
+    }
+
+    /* Responsive */
+    @media (max-width:900px){
+      .hero{ grid-template-columns: 1fr; padding:18px; }
+      .search input{ width:120px; }
+      .topbar{ padding:10px 14px; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1><i class="fas fa-star"></i> NEBULATIERS <i class="fas fa-star"></i></h1>
-        <p>PvP Rankings & Player Tiers</p>
-    </header>
+  <header class="topbar">
+    <a class="brand" href="#">
+      <div class="logo">NH</div>
+      <div>
+        <div class="title">Nebula Hardcore</div>
+        <div style="font-size:12px; color:#bdbada; margin-top:2px;">Official Store</div>
+      </div>
+    </a>
 
-    <nav>
-        <a href="#" onclick="showCategory('overall')"><i class="fas fa-trophy"></i> Overall</a>
-        <a href="#" onclick="showCategory('ltms')"><i class="fas fa-gamepad"></i> LTMs</a>
-        <a href="#" onclick="showCategory('vanilla')"><i class="fas fa-cube"></i> Vanilla</a>
-        <a href="#" onclick="showCategory('uhc')"><i class="fas fa-skull"></i> UHC</a>
-        <a href="#" onclick="showCategory('pot')"><i class="fas fa-flask"></i> Pot</a>
-        <a href="#" onclick="showCategory('neth')"><i class="fas fa-fire"></i> Neth</a>
-        <a href="#" onclick="showCategory('ops')"><i class="fas fa-bolt"></i> OPS</a>
-        <a href="#" onclick="showCategory('mp')"><i class="fas fa-users"></i> MP</a>
-        <a href="#" onclick="showCategory('sword')"><i class="fas fa-sword"></i> Sword</a>
-        <a href="#" onclick="showCategory('axe')"><i class="fas fa-axe"></i> Axe</a>
-        <a href="#" onclick="showCategory('mace')"><i class="fas fa-hammer"></i> Mace</a>
+    <nav class="nav">
+      <a href="#" onclick="filterCategory('all')">All</a>
+      <a href="#" onclick="filterCategory('ranks')">Ranks</a>
+      <a href="#" onclick="filterCategory('cosmetic')">Cosmetic</a>
+      <a href="#" onclick="filterCategory('keys')">Keys</a>
+      <div class="search" style="margin-left:12px;">
+        <i class="fa fa-search"></i>
+        <input id="q" placeholder="Cari item..." oninput="searchItems()" />
+      </div>
     </nav>
 
-    <div class="container">
-        <div class="server-info">
-            <h2><i class="fas fa-server"></i> Server IP: play.nebulahc.my.id</h2>
-            <p>#PlayerRegionTiers | #PlayerRegion</p>
-        </div>
-
-        <div id="content">
-            <!-- Konten akan dimuat di sini berdasarkan kategori -->
-            <div class="tier-section" id="overall">
-                <h2><i class="fas fa-chart-line"></i> Overall Rankings</h2>
-                <div class="rankings">
-                    <div class="rank-item">
-                        <div class="rank-icon"><i class="fas fa-medal rank-gold"></i></div>
-                        <h3 class="rank-gold">1. ProGamer123</h3>
-                        <p>Tier: <span class="tier-ht"><i class="fas fa-crown tier-icon"></i> HT 5</span></p>
-                    </div>
-                    <div class="rank-item">
-                        <div class="rank-icon"><i class="fas fa-medal rank-silver"></i></div>
-                        <h3 class="rank-silver">2. SwordMaster</h3>
-                        <p>Tier: <span class="tier-ht"><i class="fas fa-crown tier-icon"></i> HT 4</span></p>
-                    </div>
-                    <div class="rank-item">
-                        <div class="rank-icon"><i class="fas fa-medal rank-bronze"></i></div>
-                        <h3 class="rank-bronze">3. BlockBreaker</h3>
-                        <p>Tier: <span class="tier-ht"><i class="fas fa-crown tier-icon"></i> HT 3</span></p>
-                    </div>
-                    <div class="rank-item">
-                        <div class="rank-icon"><i class="fas fa-user"></i></div>
-                        <h3>4. PvPNoob</h3>
-                        <p>Tier: <span class="tier-lt"><i class="fas fa-star tier-icon"></i> LT 1</span></p>
-                    </div>
-                    <!-- Tambahkan lebih banyak cards sesuai data nyata -->
-                </div>
-                <div class="placeholder-note">
-                    <p>Data placeholder (LT paling rendah). <i class="fas fa-plug"></i> Hubungkan dengan play.nebulahc.my.id untuk stats real-time!</p>
-                </div>
-            </div>
-        </div>
+    <div class="actions">
+      <button class="ghost" onclick="openLogin()">Sign in</button>
+      <button class="btn" onclick="openCart()"><i class="fa fa-shopping-cart"></i> Cart <span id="cartCount" style="margin-left:8px;">0</span></button>
     </div>
+  </header>
 
-    <footer>
-        <p>&copy; 2025 NEBULATIERS. All Rights Reserved. | <i class="fas fa-globe"></i> Join the PvP Community!</p>
-    </footer>
+  <main>
+    <section class="hero">
+      <div class="hero-left">
+        <h1>Nebula Hardcore - Official Store</h1>
+        <p>Beli rank, cosmetic, dan item eksklusif untuk server <strong>play.nebulahc.my.id</strong>. Mudah & cepat — langsung aktif setelah pembelian (simulasi).</p>
+        <div class="features">
+          <div class="feature"><i class="fa fa-check-circle"></i> Aman & Terpercaya</div>
+          <div class="feature"><i class="fa fa-bolt"></i> Proses Cepat</div>
+          <div class="feature"><i class="fa fa-star"></i> Item Eksklusif</div>
+        </div>
+      </div>
 
-    <script>
-        function showCategory(category) {
-            // Data placeholder untuk setiap kategori (LT paling rendah, HT tertinggi - bisa diganti dengan API)
-            const sampleData = [
-                { rank: 1, player: 'MarOnHere', tier: 'HT 5', tierType: 'ht', icon: 'fas fa-medal' },
-               
+      <div class="hero-right">
+        <div class="hero-card">
+          <div class="big">Featured Pack</div>
+          <p>Paket bundle terbaik untuk pemain kompetitif. Termasuk rank + cosmetic.</p>
+          <div style="display:flex; gap:8px; justify-content:center; margin-top:12px;">
+            <button class="btn" onclick="quickAdd(1)">Buy Now</button>
+            <button class="ghost" onclick="openCart()">Lihat Cart</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="catalog">
+      <div class="catalog-header">
+        <h2 style="margin:0">Store Catalog</h2>
+        <div class="categories" id="categories">
+          <!-- kategori dinamis -->
+        </div>
+      </div>
+
+      <div class="grid" id="productGrid">
+        <!-- produk akan di-render disini -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Nebula Hardcore • play.nebulahc.my.id • Built with ❤️
+  </footer>
+
+  <!-- Cart button & modal -->
+  <button class="cart-btn" onclick="openCart()"><i class="fa fa-shopping-cart"></i> <span id="cartText">Cart</span></button>
+
+  <div id="cartModal" class="modal" style="display:none;">
+    <div class="modal-card">
+      <h3 style="margin-top:0">Your Cart</h3>
+      <div id="cartItems" style="max-height:320px; overflow:auto;"></div>
+      <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
+        <button class="ghost" onclick="closeCart()">Continue</button>
+        <button class="btn" onclick="checkout()">Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample products (bisa diganti)
+    const products = [
+      { id:1, title:"Rank • Elite", price:"$10", category:"ranks", desc:"Rank Elite dengan tag unik.", img:"https://images.unsplash.com/photo-1605902711622-cfb43c44367e?auto=format&fit=crop&w=800&q=60" },
+      { id:2, title:"Cosmetic • Nebula Cape", price:"$5", category:"cosmetic", desc:"Cape bercahaya custom.", img:"https://images.unsplash.com/photo-1546443046-ed1ce6ffd1d6?auto=format&fit=crop&w=800&q=60" },
+      { id:3, title:"Key • Mystery Box", price:"$2", category:"keys", desc:"Buka hadiah acak.", img:"https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=60" },
+      { id:4, title:"Rank • Veteran", price:"$7", category:"ranks", desc:"Rank Veteran + beberapa perks.", img:"https://images.unsplash.com/photo-1546456073-6712f79251bb?auto=format&fit=crop&w=800&q=60" },
+      { id:5, title:"Cosmetic • Nebula Hat", price:"$3", category:"cosmetic", desc:"Topi keren bergaya sci-fi.", img:"https://images.unsplash.com/photo-1520975912779-6a6f3c8ae4a4?auto=format&fit=crop&w=800&q=60" }
+    ];
+
+    // State
+    let activeCategory = 'all';
+    let cart = JSON.parse(localStorage.getItem('nh_cart') || '[]');
+
+    // Init
+    const productGrid = document.getElementById('productGrid');
+    const categoriesEl = document.getElementById('categories');
+    const cartCount = document.getElementById('cartCount');
+
+    function uniqueCategories(){
+      const cats = new Set(products.map(p=>p.category));
+      return ['all', ...Array.from(cats)];
+    }
+
+    function renderCategories(){
+      const cats = uniqueCategories();
+      categoriesEl.innerHTML = '';
+      cats.forEach(c=>{
+        const btn = document.createElement('button');
+        btn.className = 'cat' + (c===activeCategory ? ' active' : '');
+        btn.textContent = c==='all' ? 'All' : c.charAt(0).toUpperCase()+c.slice(1);
+        btn.onclick = ()=>filterCategory(c);
+        categoriesEl.appendChild(btn);
+      })
+    }
+
+    function renderProducts(){
+      const q = document.getElementById('q').value.toLowerCase();
+      productGrid.innerHTML = '';
+      const filtered = products.filter(p=>{
+        return (activeCategory==='all' || p.category===activeCategory) &&
+               (p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+      });
+      filtered.forEach(p=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="thumb">
+            <img src="${p.img}" alt="${p.title}">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <strong style="font-weight:700">${p.title}</strong>
+            <div class="price">${p.price}</div>
+          </div>
+          <p style="margin:8px 0 0; color:#d7d4f6; opacity:.9">${p.desc}</p>
+          <div class="meta">
+            <div style="font-size:13px; color:#bdbada">${p.category.toUpperCase()}</div>
+            <div style="display:flex; gap:8px;">
+              <button class="ghost" onclick="viewDetails(${p.id})">Detail</button>
+              <button class="btn" onclick="addToCart(${p.id})">Add</button>
+            </div>
+          </div>
+        `;
+        productGrid.appendChild(card);
+      })
+    }
+
+    function filterCategory(c){
+      activeCategory = c;
+      renderCategories();
+      renderProducts();
+    }
+
+    function searchItems(){
+      renderProducts();
+    }
+
+    function viewDetails(id){
+      const p = products.find(x=>x.id===id);
+      alert(p.title + "\\n\\n" + p.desc + "\\nHarga: " + p.price);
+    }
+
+    function addToCart(id){
+      const p = products.find(x=>x.id===id);
+      cart.push({ ...p, qty:1 });
+      saveCart();
+      renderCartCount();
+      openCart();
+    }
+
+    function quickAdd(id){
+      addToCart(id);
+    }
+
+    function saveCart(){
+      localStorage.setItem('nh_cart', JSON.stringify(cart));
+    }
+
+    function renderCartCount(){
+      const total = cart.reduce((s,i)=>s+i.qty,0);
+      cartCount.textContent = total;
+      document.getElementById('cartText').textContent = 'Cart ('+total+')';
+    }
+
+    function openCart(){
+      renderCartItems();
+      document.getElementById('cartModal').style.display = 'flex';
+    }
+    function closeCart(){
+      document.getElementById('cartModal').style.display = 'none';
+    }
+
+    function renderCartItems(){
+      const el = document.getElementById('cartItems');
+      el.innerHTML = '';
+      if(cart.length===0){
+        el.innerHTML = '<p style="opacity:.9">Cart kosong.</p>';
+        return;
+      }
+      cart.forEach((it, idx)=>{
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <div style="width:56px; height:56px; border-radius:8px; overflow:hidden;">
+            <img src="${it.img}" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div style="flex:1; text-align:left;">
+            <div style="font-weight:700">${it.title}</div>
+            <div style="font-size:13px; color:#bdbada">${it.price}</div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+            <div style="font-weight:700">${it.qty}</div>
+            <div style="display:flex; gap:6px;">
+              <button class="ghost" onclick="dec(${idx})">-</button>
+              <button class="btn" onclick="inc(${idx})">+</button>
+            </div>
+            <button class="ghost" style="margin-top:6px;" onclick="removeItem(${idx})">Remove</button>
+          </div>
+        `;
+        el.appendChild(div);
+      })
+    }
+
+    function inc(i){ cart[i].qty++; saveCart(); renderCartItems(); renderCartCount(); }
+    function dec(i){ cart[i].qty = Math.max(1, cart[i].qty-1); saveCart(); renderCartItems(); renderCartCount(); }
+    function removeItem(i){ cart.splice(i,1); saveCart(); renderCartItems(); renderCartCount(); }
+
+    function checkout(){
+      if(cart.length===0){ alert('Cart kosong.'); return; }
+      // Simulasi checkout simple
+      alert('Terima kasih! Pembayaran disimulasikan — detail pembelian akan dikirim (simulasi).');
+      cart = [];
+      saveCart();
+      renderCartItems();
+      renderCartCount();
+      closeCart();
+    }
+
+    function openLogin(){
+      alert('Fitur login belum aktif di demo ini.');
+    }
+
+    // Init render
+    renderCategories();
+    renderProducts();
+    renderCartCount();
+  </script>
+</body>
+</html>
+"""
+
+# Simpan file ke /mnt/data
+with open("/mnt/data/index.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+"/mnt/data/index.html"
