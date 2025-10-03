@@ -1,257 +1,181 @@
-<!DOCTYPE html>
+# Creating a single-file index.html that includes embedded rank logos (base64) and full UI.
+# It will read available images from /mnt/data and embed them. If multiple images exist, use them; otherwise fallback.
+from pathlib import Path
+import base64, html, os, json, textwrap
+
+# locate possible image files uploaded earlier
+candidates = [
+    "/mnt/data/A_digital_vector_image_displays_six_rank_badges_in.png",
+    "/mnt/data/A_digital_graphic_design_features_the_word_\"WARLOR.png",
+    "/mnt/data/A_digital_vector_image_displays_four_distinct_rank.png"
+]
+images = {}
+for p in candidates:
+    if os.path.exists(p):
+        key = Path(p).stem
+        with open(p, "rb") as f:
+            b = f.read()
+            mime = "image/png"
+            datauri = f"data:{mime};base64," + base64.b64encode(b).decode("ascii")
+            images[key] = datauri
+
+# We'll attempt to provide six logos:
+# If we have the six-badges image, we'll use it for all ranks as a visual placeholder.
+six_key = None
+for k in images:
+    if "six" in k or "six_rank" in k or "six_rank_badges" in k or "six" in k:
+        six_key = k
+        break
+if six_key is None and images:
+    six_key = list(images.keys())[0]
+
+# Warlord specific image if available
+warlord_key = None
+for k in images:
+    if "warlor" in k.lower() or "warlord" in k.lower():
+        warlord_key = k
+        break
+
+# choose images for ranks (use warlord image for Warlord if present, otherwise use six_key)
+rank_images = {
+    "Voidling": six_key,
+    "Phantom": six_key,
+    "Warlord": warlord_key if warlord_key else six_key,
+    "Overseer": six_key,
+    "Eternal": six_key,
+    "Titan": six_key
+}
+
+# Build HTML with embedded images
+html_content = f"""<!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Nebula Hardcore — Store & Support</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nebula Hardcore — Store (HD)</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 <style>
-  :root{
-    --bg-1: #08060a;
-    --bg-2: #0f0b13;
-    --muted: #cfcfe0;
-    --glass: rgba(255,255,255,0.04);
-    --accent-a: #7b2cff;
-    --accent-b: #3ac7ff;
-    --success: #2bd98b;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    background:
-      radial-gradient(800px 400px at 10% 10%, rgba(123,44,255,0.06), transparent 12%),
-      radial-gradient(600px 300px at 90% 90%, rgba(58,199,255,0.04), transparent 12%),
-      linear-gradient(180deg,var(--bg-1),var(--bg-2));
-    color:var(--muted);
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    padding-bottom:48px;
-  }
+:root{{--bg1:#08060a;--bg2:#0f0b13;--muted:#cfcfe0;--accent1:#7b2cff;--accent2:#3ac7ff;--glass:rgba(255,255,255,0.04);}}
+*{{box-sizing:border-box}}
+html,body{{height:100%}}
+body{{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--muted);-webkit-font-smoothing:antialiased}}
+.container{{max-width:1200px;margin:28px auto;padding:20px}}
+.header{{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.03)}}
+.brand{{display:flex;align-items:center;gap:12px}}
+.logo-badge{{width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:white;font-family:Orbitron;font-weight:700;box-shadow:0 8px 30px rgba(59,30,130,0.25)}}
+.title{{font-family:Orbitron;font-size:20px}}
+.controls{{display:flex;gap:10px;align-items:center}}
+.search{{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:var(--glass);border:1px solid rgba(255,255,255,0.03)}}
+.search input{{background:transparent;border:0;outline:none;color:var(--muted);width:200px}}
 
-  /* Layout */
-  .container{max-width:1200px;margin:28px auto;padding:20px}
-  header.store-header{
-    display:flex;align-items:center;justify-content:space-between;gap:12px;
-    padding:18px;border-radius:14px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border:1px solid rgba(255,255,255,0.04);
-    box-shadow:0 10px 40px rgba(0,0,0,0.6);
-    backdrop-filter: blur(6px);
-  }
-  .logo{
-    display:flex;align-items:center;gap:12px;
-  }
-  .logo-badge{
-    width:56px;height:56px;border-radius:12px;
-    display:grid;place-items:center;color:white;
-    background:linear-gradient(135deg,var(--accent-a),var(--accent-b));
-    box-shadow:0 8px 30px rgba(59,30,130,0.25);
-    font-family:'Orbitron';font-weight:700;
-  }
-  .brand-title{font-family:'Orbitron';font-size:20px;color:white}
-  .header-right{display:flex;gap:10px;align-items:center}
+/* hero */
+.hero{{display:grid;grid-template-columns:1fr 360px;gap:20px;margin-top:18px}}
+.panel{{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}}
+.hero h1{{margin:0;font-family:Orbitron}}
+.tags{{display:flex;gap:8px;margin-top:12px}}
+.tag{{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);font-weight:700}}
 
-  /* Search */
-  .search{
-    display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:var(--glass);
-    border:1px solid rgba(255,255,255,0.03);
-  }
-  .search input{background:transparent;border:none;outline:none;color:var(--muted);width:220px}
+/* grid */
+.catalog-header{{display:flex;justify-content:space-between;align-items:center;margin-top:20px;margin-bottom:12px}}
+.grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}}
+.card{{border-radius:12px;padding:14px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.03);transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;min-height:340px;position:relative}}
+.card:hover{{transform:translateY(-8px);box-shadow:0 18px 50px rgba(0,0,0,0.6)}}
+.thumb{{height:160px;border-radius:10px;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,rgba(123,44,255,0.12),rgba(58,199,255,0.08));margin-bottom:12px}}
+.thumb img{{width:100%;height:100%;object-fit:contain}}
+.name{{font-weight:800;margin:0 0 6px 0}}
+.desc{{font-size:13px;color:#bdbada;margin:0 0 8px}}
+.price{{font-family:Orbitron;font-weight:800;font-size:18px;margin-top:auto}}
+.actions{{display:flex;gap:8px;margin-top:12px}}
+.btn-primary{{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;border:0;padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:700}}
+.btn-ghost{{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:10px;cursor:pointer}}
 
-  /* hero */
-  .hero{
-    margin-top:18px;
-    display:grid;
-    grid-template-columns: 1fr 360px;
-    gap:20px;
-  }
-  .hero-card{
-    padding:20px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-    border:1px solid rgba(255,255,255,0.03);
-    box-shadow:0 10px 40px rgba(0,0,0,0.6);
-  }
-  .hero-card h1{font-family:'Orbitron';margin:0 0 8px 0;color:white}
-  .hero-card p{margin:0 0 12px 0;color:#dcd9ff;opacity:.9}
+/* floating cart */
+.cart-fab{{position:fixed;right:20px;bottom:22px;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#fff;padding:14px 16px;border-radius:999px;box-shadow:0 18px 50px rgba(59,30,130,0.28);cursor:pointer;display:flex;gap:8px;align-items:center;z-index:999}}
 
-  /* grid */
-  .catalog-header{display:flex;align-items:center;justify-content:space-between;margin-top:18px;margin-bottom:12px}
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
-    gap:18px;
-  }
-  .product{
-    border-radius:12px;padding:14px;display:flex;flex-direction:column;min-height:320px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-    border:1px solid rgba(255,255,255,0.03);
-    transition:transform .25s ease, box-shadow .25s ease;
-    position:relative; overflow:hidden;
-  }
-  .product:hover{transform:translateY(-8px);box-shadow:0 18px 50px rgba(0,0,0,0.6)}
-  .thumb{height:160px;border-radius:10px;overflow:hidden;margin-bottom:12px;background:linear-gradient(135deg, rgba(123,44,255,0.12), rgba(58,199,255,0.08));display:grid;place-items:center}
-  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-  .title{font-weight:700;margin:0 0 6px 0}
-  .desc{font-size:13px;color:#bdbada;margin:0 0 12px}
-  .price{font-weight:800;font-family:'Orbitron';color:white;margin-top:auto}
-  .product .actions{display:flex;gap:8px;margin-top:12px}
-  .btn-primary{background:linear-gradient(90deg,var(--accent-a),var(--accent-b));color:white;border:none;padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:700}
-  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:10px;cursor:pointer}
+/* modal */
+.modal{{position:fixed;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:1000}}
+.modal .panel{{width:880px;max-width:96%;max-height:90vh;overflow:auto}}
+.input, textarea, select{{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted);outline:none}}
+.ticket-card{{background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;margin-bottom:8px}}
+.table{{width:100%;border-collapse:collapse}}
+.table th,.table td{{text-align:left;padding:8px;border-bottom:1px dashed rgba(255,255,255,0.03)}}
+.admin-badge{{padding:6px 10px;border-radius:8px;background:rgba(123,44,255,0.08);color:var(--accent1);font-weight:700;cursor:pointer}}
 
-  /* floating cart */
-  .cart-fab{position:fixed;right:20px;bottom:22px;background:linear-gradient(90deg,var(--accent-a),var(--accent-b));color:#fff;padding:14px 16px;border-radius:999px;box-shadow:0 18px 50px rgba(59,30,130,0.28);cursor:pointer;display:flex;gap:8px;align-items:center;z-index:999}
-
-  /* modal / panels */
-  .modal{position:fixed;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(2,2,2,0.6), rgba(2,2,2,0.6));z-index:1000}
-  .panel{width:880px;max-width:96%;background:linear-gradient(180deg, rgba(11,11,13,0.98), rgba(18,18,20,0.98));border-radius:12px;padding:18px;border:1px solid rgba(138,43,226,0.06);box-shadow:0 18px 60px rgba(0,0,0,0.7)}
-  .panel h3{margin:0 0 12px 0}
-  .two-col{display:grid;grid-template-columns:1fr 360px;gap:12px}
-  .small{font-size:13px;color:#bdbada}
-
-  table.orders{width:100%;border-collapse:collapse;color:var(--muted);font-size:14px}
-  table.orders th, table.orders td{padding:8px;border-bottom:1px dashed rgba(255,255,255,0.03);text-align:left}
-  .tag{display:inline-block;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.02);font-weight:700}
-
-  /* Ticket card */
-  .ticket-card{background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;margin-bottom:8px}
-  .input, textarea, select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted);outline:none}
-
-  /* admin-badge */
-  .admin-badge{padding:6px 10px;border-radius:8px;background:rgba(123,44,255,0.08);color:var(--accent-a);font-weight:700;cursor:pointer}
-
-  /* responsive */
-  @media (max-width:980px){
-    .hero{grid-template-columns:1fr}
-    .two-col{grid-template-columns:1fr}
-    .container{padding:12px}
-  }
+/* small responsive tweaks */
+@media(max-width:980px){.hero{grid-template-columns:1fr}.panel{padding:12px}.thumb{height:140px}}
 </style>
 </head>
 <body>
 <div class="container">
-  <header class="store-header" role="banner">
-    <div class="logo">
+  <header class="header">
+    <div class="brand">
       <div class="logo-badge">NH</div>
       <div>
-        <div class="brand-title">Nebula Hardcore</div>
-        <div class="small">play.nebulahc.my.id — Official Store</div>
+        <div class="title">Nebula Hardcore</div>
+        <div class="small" style="color:#bdbada">play.nebulahc.my.id • Official Store</div>
       </div>
     </div>
-
-    <div class="header-right">
-      <div class="search" title="Search">
-        <i class="fa fa-search" style="opacity:.8"></i>
-        <input id="q" placeholder="Cari rank / item..." oninput="searchItems()" aria-label="search">
-      </div>
-
-      <div id="adminStatus" style="margin-left:8px"></div>
+    <div class="controls">
+      <div class="search"><i class="fa fa-search"></i><input id="q" placeholder="Cari rank / item..." oninput="renderProducts()"></div>
+      <div id="adminStatus"></div>
       <button class="btn-ghost" onclick="openLogin()">Admin</button>
       <button class="btn-primary" onclick="openCart()">Cart (<span id="cartCount">0</span>)</button>
+      <button class="btn-ghost" onclick="openTicket()">Create Ticket</button>
     </div>
   </header>
 
   <main>
     <section class="hero">
-      <div class="hero-card">
+      <div class="panel">
         <h1>Ranks & Exclusive Items</h1>
-        <p>Upgrade permainanmu di Nebula Hardcore — pilih rank, checkout cepat lewat WhatsApp, atau buat ticket jika butuh bantuan.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-          <div class="tag">Instant Support</div>
-          <div class="tag">Secure</div>
-          <div class="tag">Auto-commands (admin)</div>
-        </div>
+        <p class="small">Pilih rank yang kamu mau, checkout lewat WhatsApp. Jika ada masalah, buat ticket — admin bisa tanggapi lewat panel.</p>
+        <div class="tags"><div class="tag">Instant</div><div class="tag">Secure</div><div class="tag">Admin Commands</div></div>
       </div>
-
-      <aside class="hero-card">
+      <aside class="panel">
         <h3>Featured</h3>
-        <p class="small">Bundle recommendation: Titan + cosmetic</p>
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn-primary" onclick="quickAdd(6)">Buy Titan</button>
-          <button class="btn-ghost" onclick="openTicket()">Open Ticket</button>
-        </div>
+        <p class="small">Bundle suggestion: Titan + cosmetic</p>
+        <div style="display:flex;gap:8px;margin-top:12px"><button class="btn-primary" onclick="quickAdd('Titan')">Buy Titan</button><button class="btn-ghost" onclick="openTicket()">Open Ticket</button></div>
       </aside>
     </section>
 
     <section class="catalog">
-      <div class="catalog-header">
-        <h2>Store Catalog</h2>
-        <div class="small">Click "Tambah" to add to cart — checkout opens WhatsApp + stores order for admin.</div>
-      </div>
-
-      <div id="productGrid" class="grid" aria-live="polite"></div>
+      <div class="catalog-header"><h2>Store Catalog</h2><div class="small">Voidling 15k • Phantom 30k • Warlord 60k • Overseer 90k • Eternal 100k • Titan 130k</div></div>
+      <div id="productGrid" class="grid"></div>
     </section>
   </main>
 </div>
 
-<!-- Floating cart button -->
-<button class="cart-fab" onclick="openCart()" title="Open cart">
-  <i class="fa fa-shopping-cart"></i> <span id="cartFabText" style="font-weight:700">Cart</span>
-</button>
+<button class="cart-fab" onclick="openCart()" title="Cart"><i class="fa fa-shopping-cart"></i> <span id="cartFabText">Cart</span></button>
 
 <!-- CART MODAL -->
 <div id="cartModal" class="modal" style="display:none">
-  <div class="panel" role="dialog" aria-modal="true">
+  <div class="panel">
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <h3>Your Cart</h3>
-      <div style="display:flex;gap:8px">
-        <button class="ghost" onclick="closeCart()">Close</button>
-      </div>
+      <h3>Your Cart</h3><div><button class="btn-ghost" onclick="closeCart()">Close</button></div>
     </div>
-
     <div id="cartItems" style="max-height:320px;overflow:auto;margin-top:12px"></div>
-
-    <div style="margin-top:12px">
-      <label class="small">Minecraft Username</label>
-      <input id="mcName" class="input" placeholder="Contoh: ProGamer123" autocomplete="off">
-    </div>
-
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-      <button class="ghost" onclick="clearCart()">Clear</button>
-      <button class="btn-primary" onclick="checkout()">Checkout (WhatsApp)</button>
-    </div>
+    <div style="margin-top:12px"><label class="small">Minecraft Username</label><input id="mcName" class="input" placeholder="ProGamer123"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn-ghost" onclick="clearCart()">Clear</button><button class="btn-primary" onclick="checkout()">Checkout (WhatsApp)</button></div>
   </div>
 </div>
 
 <!-- LOGIN MODAL -->
-<div id="loginModal" class="modal" style="display:none">
-  <div class="panel" role="dialog" aria-modal="true">
-    <h3>Admin Login</h3>
-    <div style="display:grid;gap:8px;margin-top:8px">
-      <input id="adminUser" class="input" placeholder="Username" autocomplete="off">
-      <input id="adminPass" class="input" placeholder="Password" type="password" autocomplete="new-password">
-      <div style="display:flex;justify-content:flex-end;gap:8px">
-        <button class="ghost" onclick="closeLogin()">Batal</button>
-        <button class="btn-primary" onclick="doAdminLogin()">Login</button>
-      </div>
-      <div class="small">Default admin: <strong>admin</strong> / <strong>nebula123</strong></div>
-    </div>
-  </div>
-</div>
+<div id="loginModal" class="modal" style="display:none"><div class="panel"><h3>Admin Login</h3><div style="display:grid;gap:8px;margin-top:8px"><input id="adminUser" class="input" placeholder="Username"><input id="adminPass" class="input" placeholder="Password" type="password"><div style="display:flex;justify-content:flex-end;gap:8px"><button class="btn-ghost" onclick="closeLogin()">Cancel</button><button class="btn-primary" onclick="doAdminLogin()">Login</button></div><div class="small">Default admin: <strong>admin</strong> / <strong>nebula123</strong></div></div></div></div>
 
 <!-- ADMIN PANEL -->
 <div id="adminPanel" class="modal" style="display:none">
-  <div class="panel" role="dialog" aria-modal="true">
+  <div class="panel">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <h3>Admin Panel</h3>
-      <div style="display:flex;gap:8px">
-        <button class="ghost" onclick="logoutAdmin()">Logout</button>
-        <button class="ghost" onclick="closeAdmin()">Close</button>
-      </div>
+      <div style="display:flex;gap:8px"><button class="ghost" onclick="logoutAdmin()">Logout</button><button class="ghost" onclick="closeAdmin()">Close</button></div>
     </div>
 
     <div style="margin-top:12px" class="two-col">
       <div>
         <h4>Orders</h4>
-        <table class="orders" id="ordersTable" aria-live="polite">
-          <thead><tr><th>User</th><th>Items</th><th>Total</th><th>When</th><th>Actions</th></tr></thead>
-          <tbody id="ordersTbody"></tbody>
-        </table>
+        <table class="table"><thead><tr><th>User</th><th>Items</th><th>Total</th><th>When</th><th>Actions</th></tr></thead><tbody id="ordersTbody"></tbody></table>
       </div>
-
       <div>
         <h4>Tickets</h4>
         <div id="ticketsList" style="max-height:360px;overflow:auto"></div>
@@ -263,442 +187,162 @@
     <div style="display:grid;gap:8px">
       <h4>Manage Products</h4>
       <div style="display:grid;grid-template-columns:1fr 120px 120px;gap:8px">
-        <input id="newTitle" class="input" placeholder="Nama produk (contoh: Rank • Titan)">
-        <input id="newPrice" class="input" placeholder="Harga (angka saja)">
+        <input id="newTitle" class="input" placeholder="Nama produk (Rank • Titan)">
+        <input id="newPrice" class="input" placeholder="Harga">
         <input id="newImg" class="input" placeholder="URL gambar (opsional)">
       </div>
-      <div style="display:flex;gap:8px;justify-content:flex-end">
-        <button class="ghost" onclick="resetNewProduct()">Reset</button>
-        <button class="btn-primary" id="saveProductBtn" onclick="saveProduct()">Tambah / Simpan</button>
-      </div>
-
+      <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn-ghost" onclick="resetNewProduct()">Reset</button><button class="btn-primary" id="saveProductBtn" onclick="saveProduct()">Tambah / Simpan</button></div>
       <div id="productManageList" style="max-height:180px;overflow:auto;margin-top:8px"></div>
-
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-        <button class="ghost" onclick="exportData()">Export JSON</button>
-        <button class="ghost" onclick="importData()">Import JSON</button>
-      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px"><button class="btn-ghost" onclick="exportData()">Export JSON</button><button class="btn-ghost" onclick="importData()">Import JSON</button></div>
     </div>
   </div>
 </div>
 
 <!-- TICKET MODAL -->
 <div id="ticketModal" class="modal" style="display:none">
-  <div class="panel" role="dialog" aria-modal="true">
-    <h3>Submit Ticket</h3>
+  <div class="panel">
+    <h3>Create Ticket</h3>
     <div style="display:grid;gap:8px;margin-top:8px">
       <input id="tUser" class="input" placeholder="Minecraft username">
-      <input id="tEmail" class="input" placeholder="Email (optional)">
-      <select id="tCat" class="input">
-        <option value="Rank">Rank</option>
-        <option value="Payment">Pembayaran</option>
-        <option value="Other">Lainnya</option>
-      </select>
-      <textarea id="tDesc" class="input" placeholder="Deskripsikan masalah atau lampirkan bukti..."></textarea>
-
-      <div style="display:flex;gap:8px;justify-content:flex-end">
-        <button class="ghost" onclick="closeTicket()">Batal</button>
-        <button class="btn-primary" onclick="submitTicket()">Kirim Ticket</button>
-      </div>
+      <input id="tEmail" class="input" placeholder="Email (opsional)">
+      <select id="tCat" class="input"><option value="Rank">Rank</option><option value="Payment">Pembayaran</option><option value="Other">Lainnya</option></select>
+      <textarea id="tDesc" class="input" placeholder="Deskripsikan masalah..."></textarea>
+      <label class="small">Upload bukti (opsional)</label><input id="tFile" type="file" accept="image/*">
+      <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn-ghost" onclick="closeTicket()">Cancel</button><button class="btn-primary" onclick="submitTicket()">Submit Ticket</button></div>
     </div>
   </div>
 </div>
 
 <script>
-/* =========================
-   Data & Storage helpers
-   ========================= */
-const DEFAULT_PRODUCTS = [
-  { id:1, title:"Rank • Voidling", price:15000, category:"ranks", desc:"Voidling rank — 15k", img:"https://images.unsplash.com/photo-1605902711622-cfb43c44367e?auto=format&fit=crop&w=800&q=60" },
-  { id:2, title:"Rank • Phantom", price:30000, category:"ranks", desc:"Phantom rank — 30k", img:"https://images.unsplash.com/photo-1546443046-ed1ce6ffd1d6?auto=format&fit=crop&w=800&q=60" },
-  { id:3, title:"Rank • Warlord", price:60000, category:"ranks", desc:"Warlord rank — 60k", img:"https://images.unsplash.com/photo-1546456073-6712f79251bb?auto=format&fit=crop&w=800&q=60" },
-  { id:4, title:"Rank • Overseer", price:90000, category:"ranks", desc:"Overseer rank — 90k", img:"https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=60" },
-  { id:5, title:"Rank • Eternal", price:100000, category:"ranks", desc:"Eternal rank — 100k", img:"https://images.unsplash.com/photo-1520975912779-6a6f3c8ae4a4?auto=format&fit=crop&w=800&q=60" },
-  { id:6, title:"Rank • Titan", price:130000, category:"ranks", desc:"Titan rank — 130k", img:"https://images.unsplash.com/photo-1520975912779-6a6f3c8ae4a4?auto=format&fit=crop&w=800&q=60" }
+// embed images mapping (base64 data URIs) - generated by server
+const IMG_MAP = {"""
+
+# attach each rank image datauri if available
+for rank, key in rank_images.items():
+    if key and key in images:
+        uri = images[key]
+    else:
+        uri = ""
+    safe_key = rank.replace("'", "\\'")
+    html_content += f"\n  '{rank}': '{uri}',"
+html_content += "\n};\n"
+
+# continue HTML JS: products with embedded image URIs
+html_content += """
+// Data (initial products)
+let products = [
+  { id:1, title:"Rank • Voidling", price:15000, category:"ranks", desc:"Voidling rank — 15k", img: IMG_MAP['Voidling'] },
+  { id:2, title:"Rank • Phantom", price:30000, category:"ranks", desc:"Phantom rank — 30k", img: IMG_MAP['Phantom'] },
+  { id:3, title:"Rank • Warlord", price:60000, category:"ranks", desc:"Warlord rank — 60k", img: IMG_MAP['Warlord'] },
+  { id:4, title:"Rank • Overseer", price:90000, category:"ranks", desc:"Overseer rank — 90k", img: IMG_MAP['Overseer'] },
+  { id:5, title:"Rank • Eternal", price:100000, category:"ranks", desc:"Eternal rank — 100k", img: IMG_MAP['Eternal'] },
+  { id:6, title:"Rank • Titan", price:130000, category:"ranks", desc:"Titan rank — 130k", img: IMG_MAP['Titan'] }
 ];
 
-function load(key, fallback){ try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch(e){ return fallback; } }
-function save(key, v){ localStorage.setItem(key, JSON.stringify(v)); }
-
-/* State */
-let products = load('nh_products', DEFAULT_PRODUCTS);
-let cart = load('nh_cart', []);
-let orders = load('nh_orders', []);
-let tickets = load('nh_tickets', []);
+// load saved products if any
+try{ const stored = JSON.parse(localStorage.getItem('nh_products')||'null'); if(Array.isArray(stored)) products = stored; }catch(e){}
+// state
+let cart = JSON.parse(localStorage.getItem('nh_cart')||'[]');
+let orders = JSON.parse(localStorage.getItem('nh_orders')||'[]');
+let tickets = JSON.parse(localStorage.getItem('nh_tickets')||'[]');
 let editingProductId = null;
 
-/* Admin credentials (client-side demo only) */
+// admin creds
 const ADMIN_USER = 'admin';
 const ADMIN_PASS = 'nebula123';
 
-/* Helpers */
-function formatRp(n){
-  return 'Rp' + (n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}
+function formatRp(n){ return 'Rp' + (n||0).toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.'); }
 
-/* =========================
-   Render Product Grid
-   ========================= */
+// render products
 const productGrid = document.getElementById('productGrid');
-const cartCountEl = document.getElementById('cartCount');
-
 function renderProducts(){
   productGrid.innerHTML = '';
-  const q = document.getElementById('q') ? document.getElementById('q').value.toLowerCase() : '';
-  products.filter(p => !q || p.title.toLowerCase().includes(q) || (p.desc||'').toLowerCase().includes(q))
-    .forEach(p => {
-      const el = document.createElement('div');
-      el.className = 'product';
-      el.innerHTML = `
-        <div class="thumb" aria-hidden="true"><img loading="lazy" src="${p.img}" alt="${p.title}"></div>
-        <div class="title">${p.title}</div>
-        <div class="desc">${p.desc || ''}</div>
-        <div class="price">${formatRp(p.price)}</div>
-        <div class="actions">
-          <button class="btn-ghost" onclick="viewDetails(${p.id})"><i class="fa fa-info-circle"></i> Detail</button>
-          <button class="btn-primary" onclick="addToCart(${p.id})"><i class="fa fa-plus"></i> Tambah</button>
-        </div>
-      `;
-      productGrid.appendChild(el);
-    });
-}
-
-/* =========================
-   Cart functions
-   ========================= */
-function saveCart(){ save('nh_cart', cart); renderCartCount(); }
-function renderCartCount(){ cartCountEl.textContent = cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartFabText').innerText = `Cart (${cart.reduce((s,i)=>s+i.qty,0)})`; }
-function addToCart(id){
-  const p = products.find(x=>x.id===id);
-  if(!p) return;
-  cart.push({ ...p, qty:1 });
-  saveCart();
-  openCart();
-}
-function quickAdd(id){ addToCart(id); }
-function openCart(){
-  renderCartItems();
-  document.getElementById('cartModal').style.display = 'flex';
-}
-function closeCart(){ document.getElementById('cartModal').style.display = 'none'; }
-function renderCartItems(){
-  const el = document.getElementById('cartItems'); el.innerHTML = '';
-  if(cart.length === 0){ el.innerHTML = '<div class="small">Cart kosong.</div>'; return; }
-  cart.forEach((it, idx) => {
-    const dom = document.createElement('div');
-    dom.className = 'ticket-card';
-    dom.innerHTML = `<div style="display:flex;gap:12px;align-items:center">
-      <div style="width:64px;height:64px;border-radius:8px;overflow:hidden"><img style="width:100%;height:100%;object-fit:cover" src="${it.img}"></div>
-      <div style="flex:1">
-        <div style="font-weight:700">${it.title}</div>
-        <div class="small">${formatRp(it.price)}</div>
-        <div style="margin-top:6px">
-          <button class="ghost" onclick="dec(${idx})">-</button>
-          <span style="margin:0 8px;font-weight:700">${it.qty}</span>
-          <button class="btn-ghost" onclick="inc(${idx})">+</button>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-        <div style="font-weight:800">${formatRp(it.price * it.qty)}</div>
-        <button class="ghost" onclick="removeItem(${idx})">Remove</button>
-      </div>
-    </div>`;
-    el.appendChild(dom);
+  const q = document.getElementById('q').value.toLowerCase();
+  products.filter(p=> !q || p.title.toLowerCase().includes(q) || (p.desc||'').toLowerCase().includes(q)).forEach(p=>{
+    const d = document.createElement('div'); d.className='card';
+    d.innerHTML = `<div class="thumb">${p.img?'<img src="'+p.img+'" alt="'+p.title+'">':''}</div>
+      <div class="name">${p.title}</div><div class="desc">${p.desc||''}</div><div class="price">${formatRp(p.price)}</div>
+      <div class="actions"><button class="btn-ghost" onclick="viewDetails(${p.id})"><i class='fa fa-info-circle'></i> Detail</button><button class="btn-primary" onclick="addToCart(${p.id})"><i class='fa fa-plus'></i> Tambah</button></div>`;
+    productGrid.appendChild(d);
   });
 }
+
+// cart functions
+function saveCart(){ localStorage.setItem('nh_cart', JSON.stringify(cart)); renderCartCount(); }
+function renderCartCount(){ document.getElementById('cartCount').textContent = cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartFabText').innerText = 'Cart ('+cart.reduce((s,i)=>s+i.qty,0)+')'; }
+function addToCart(id){ const p = products.find(x=>x.id===id); if(!p) return; cart.push({...p,qty:1}); saveCart(); openCart(); }
+function quickAdd(title){ const p = products.find(x=>x.title.toLowerCase().includes(title.toLowerCase())); if(p) addToCart(p.id); }
+function openCart(){ renderCartItems(); document.getElementById('cartModal').style.display='flex'; }
+function closeCart(){ document.getElementById('cartModal').style.display='none'; }
+function renderCartItems(){ const el = document.getElementById('cartItems'); el.innerHTML=''; if(cart.length===0){ el.innerHTML='<div class=\"small\">Cart kosong.</div>'; return; } cart.forEach((it,idx)=>{ const node=document.createElement('div'); node.className='ticket-card'; node.innerHTML = `<div style="display:flex;gap:12px;align-items:center"><div style="width:64px;height:64px;border-radius:8px;overflow:hidden"><img src="${it.img}"></div><div style="flex:1"><div style="font-weight:700">${it.title}</div><div class="small">${formatRp(it.price)}</div><div style="margin-top:6px"><button class="ghost" onclick="dec(${idx})">-</button><span style="margin:0 8px;font-weight:700">${it.qty}</span><button class="btn-ghost" onclick="inc(${idx})">+</button></div></div><div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end"><div style="font-weight:800">${formatRp(it.price*it.qty)}</div><button class="ghost" onclick="removeItem(${idx})">Remove</button></div></div>`; el.appendChild(node); }); }
 function inc(i){ cart[i].qty++; saveCart(); renderCartItems(); }
 function dec(i){ cart[i].qty = Math.max(1, cart[i].qty-1); saveCart(); renderCartItems(); }
 function removeItem(i){ cart.splice(i,1); saveCart(); renderCartItems(); }
 function clearCart(){ if(!confirm('Kosongkan cart?')) return; cart=[]; saveCart(); renderCartItems(); }
 
-/* =========================
-   Checkout (WhatsApp + save order)
-   ========================= */
-function checkout(){
-  if(cart.length === 0){ alert('Cart kosong.'); return; }
-  const mcName = document.getElementById('mcName').value.trim();
-  if(!mcName){ alert('Masukkan Minecraft username terlebih dahulu.'); return; }
+// checkout
+function checkout(){ if(cart.length===0){ alert('Cart kosong.'); return; } const mc = document.getElementById('mcName').value.trim(); if(!mc){ alert('Masukkan Minecraft username.'); return; } let total=0; let items=''; const payload=[]; cart.forEach(c=>{ items += `- ${c.title} (${formatRp(c.price)}) x${c.qty}\\n`; payload.push({title:c.title,price:c.price,qty:c.qty}); total += c.price*c.qty; }); const order = { id:Date.now(), mcName:mc, items:payload, total, status:'pending', created:new Date().toISOString() }; orders.unshift(order); localStorage.setItem('nh_orders', JSON.stringify(orders)); cart=[]; saveCart(); renderCartItems(); closeCart(); const msg = `Bang saya mau beli rank Nebula Hardcore\\nUsername: ${mc}\\n\\nDaftar item:\\n${items}\\nTotal: ${formatRp(total)}\\nServer: play.nebulahc.my.id\\nTerima kasih.`; const wa='0089677559943'; window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`,'_blank'); renderOrders(); alert('Order tersimpan dan WhatsApp dibuka.'); }
 
-  let total = 0;
-  let itemsText = '';
-  const payloadItems = cart.map(c=>({title:c.title, price:c.price, qty:c.qty}));
-  cart.forEach(c => { itemsText += `- ${c.title} (${formatRp(c.price)}) x${c.qty}\n`; total += c.price * c.qty; });
+// tickets
+function openTicket(){ document.getElementById('ticketModal').style.display='flex'; }
+function closeTicket(){ document.getElementById('ticketModal').style.display='none'; }
+function submitTicket(){ const u=document.getElementById('tUser').value.trim(); const e=document.getElementById('tEmail').value.trim(); const c=document.getElementById('tCat').value; const d=document.getElementById('tDesc').value.trim(); const f=document.getElementById('tFile'); if(!u||!d){ alert('Isi username dan deskripsi ticket'); return; } // read file if any
+  const file = f.files && f.files[0]; if(file){ const reader = new FileReader(); reader.onload = function(ev){ const imgData = ev.target.result; saveTicket(u,e,c,d,imgData); }; reader.readAsDataURL(file); } else { saveTicket(u,e,c,d,null); } }
 
-  // Save order (localStorage)
-  const order = { id:Date.now(), mcName, items:payloadItems, total, status:'pending', created: new Date().toISOString() };
-  orders.unshift(order); save('nh_orders', orders);
+function saveTicket(u,e,c,d,imgData){ const t = { id:Date.now(), user:u, email:e, category:c, desc:d, file:imgData, status:'open', created:new Date().toISOString() }; tickets.unshift(t); localStorage.setItem('nh_tickets', JSON.stringify(tickets)); closeTicket(); alert('Ticket terkirim'); renderTickets(); if(sessionStorage.getItem('nh_admin')) renderTickets(); }
 
-  // clear cart
-  cart = []; saveCart(); renderCartItems(); closeCart();
+// admin login
+function openLogin(){ document.getElementById('loginModal').style.display='flex'; }
+function closeLogin(){ document.getElementById('loginModal').style.display='none'; }
+function doAdminLogin(){ const u=document.getElementById('adminUser').value.trim(); const p=document.getElementById('adminPass').value; if(u===ADMIN_USER && p===ADMIN_PASS){ sessionStorage.setItem('nh_admin','1'); document.getElementById('loginModal').style.display='none'; openAdmin(); renderAdminBadge(); } else alert('Kredensial salah'); }
+function logoutAdmin(){ sessionStorage.removeItem('nh_admin'); renderAdminBadge(); closeAdmin(); alert('Logout sukses'); }
+function renderAdminBadge(){ document.getElementById('adminStatus').innerHTML = sessionStorage.getItem('nh_admin') ? '<span class=\"admin-badge\" onclick=\"openAdmin()\">Admin</span>' : ''; }
 
-  // WhatsApp message
-  const msg = `Bang saya mau beli rank Nebula Hardcore\nUsername: ${mcName}\n\nDaftar item:\n${itemsText}\nTotal: ${formatRp(total)}\nServer: play.nebulahc.my.id\nTerima kasih.`;
-  const waNumber = '0089677559943';
-  window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+// admin panel
+function openAdmin(){ if(!sessionStorage.getItem('nh_admin')){ openLogin(); return; } document.getElementById('adminPanel').style.display='flex'; renderOrders(); renderTickets(); renderProductManage(); }
+function closeAdmin(){ document.getElementById('adminPanel').style.display='none'; }
 
-  // refresh admin UI if open
-  renderOrders();
-  alert('Order tersimpan dan WhatsApp dibuka. Admin bisa melihat pesanan di panel.');
-}
+function renderOrders(){ const tbody = document.getElementById('ordersTbody'); tbody.innerHTML=''; orders.forEach(o=>{ const tr=document.createElement('tr'); const itemsSummary = o.items.map(i=>`${i.title} x${i.qty}`).join(', '); tr.innerHTML = `<td>${o.mcName}</td><td style=\"white-space:nowrap\">${itemsSummary}</td><td>${formatRp(o.total)}</td><td style=\"white-space:nowrap\">${new Date(o.created).toLocaleString()}</td><td style=\"white-space:nowrap\"><button class=\"btn-ghost\" onclick=\"copyCommands(${o.id})\">Copy Cmds</button> <button class=\"btn-ghost\" onclick=\"markFulfilled(${o.id})\">Mark</button> <button class=\"ghost\" onclick=\"deleteOrder(${o.id})\">Delete</button></td>`; tbody.appendChild(tr); }); }
 
-/* =========================
-   Tickets
-   ========================= */
-function openTicket(){ document.getElementById('ticketModal').style.display = 'flex'; }
-function closeTicket(){ document.getElementById('ticketModal').style.display = 'none'; }
-function submitTicket(){
-  const u = document.getElementById('tUser').value.trim();
-  const e = document.getElementById('tEmail').value.trim();
-  const c = document.getElementById('tCat').value;
-  const d = document.getElementById('tDesc').value.trim();
-  if(!u || !d){ alert('Isi username dan deskripsi ticket'); return; }
-  const t = { id: Date.now(), user: u, email: e, category: c, desc:d, status:'open', created:new Date().toISOString() };
-  tickets.unshift(t); save('nh_tickets', tickets);
-  closeTicket();
-  alert('Ticket dikirim. Admin akan melihat tiket di panel.');
-  renderTickets();
-}
+function copyCommands(id){ const o=orders.find(x=>x.id===id); if(!o) return alert('Order tidak ditemukan'); let cmds='# Commands for '+o.mcName+'\\n'; o.items.forEach(it=>{ const rank = (it.title.split('•')[1]||it.title).trim().toLowerCase().split(' ')[0]; cmds += `lp user ${o.mcName} parent set ${rank}\\n`; }); navigator.clipboard.writeText(cmds).then(()=>alert('Commands disalin')).catch(()=>prompt('Copy commands',cmds)); }
+function markFulfilled(id){ const i=orders.findIndex(x=>x.id===id); if(i===-1) return; orders[i].status='fulfilled'; localStorage.setItem('nh_orders',JSON.stringify(orders)); renderOrders(); alert('Order ditandai fulfilled'); }
+function deleteOrder(id){ if(!confirm('Hapus order ini?')) return; orders = orders.filter(x=>x.id!==id); localStorage.setItem('nh_orders',JSON.stringify(orders)); renderOrders(); alert('Order dihapus'); }
 
-/* =========================
-   Admin login & Panel
-   ========================= */
-function openLogin(){ document.getElementById('loginModal').style.display = 'flex'; }
-function closeLogin(){ document.getElementById('loginModal').style.display = 'none'; }
-function doAdminLogin(){
-  const u = document.getElementById('adminUser').value.trim();
-  const p = document.getElementById('adminPass').value;
-  if(u === ADMIN_USER && p === ADMIN_PASS){
-    sessionStorage.setItem('nh_admin','1');
-    document.getElementById('loginModal').style.display = 'none';
-    openAdmin();
-    renderAdminBadge();
-  } else { alert('Kredensial salah.'); }
-}
-function logoutAdmin(){ sessionStorage.removeItem('nh_admin'); closeAdmin(); renderAdminBadge(); alert('Logout sukses'); }
+// tickets admin
+function renderTickets(){ const el=document.getElementById('ticketsList'); el.innerHTML=''; if(tickets.length===0){ el.innerHTML='<div class=\"small\">Belum ada tiket.</div>'; return; } tickets.forEach(t=>{ const node=document.createElement('div'); node.className='ticket-card'; node.innerHTML = `<div style=\"display:flex;justify-content:space-between;align-items:flex-start\"><div><strong>${t.user}</strong> <div class=\"small\">${new Date(t.created).toLocaleString()}</div><div class=\"small\">(${t.category}) ${t.email? '• '+t.email : ''}</div></div><div style=\"display:flex;flex-direction:column;gap:6px;align-items:flex-end\"><div class=\"small\">Status: <strong>${t.status}</strong></div><div><button class=\"btn-ghost\" onclick=\"replyTicket(${t.id})\">Reply</button> <button class=\"ghost\" onclick=\"closeTicketAdmin(${t.id})\">Close</button> <button class=\"ghost\" onclick=\"deleteTicket(${t.id})\">Delete</button></div></div></div><div style=\"margin-top:8px;white-space:pre-line\" class=\"small\">${t.desc}</div>${t.file?'<div style=\"margin-top:8px\"><img src=\"'+t.file+'\" style=\"max-width:100%;border-radius:8px\"></div>':''}`; el.appendChild(node); }); }
 
-function renderAdminBadge(){
-  const el = document.getElementById('adminStatus');
-  el.innerHTML = sessionStorage.getItem('nh_admin') ? '<span class="admin-badge" onclick="openAdmin()">Admin</span>' : '';
-}
+function replyTicket(id){ const t = tickets.find(x=>x.id===id); if(!t) return; const msg = prompt('Balas tiket (catatan admin):','Sedang diproses.'); if(msg!==null){ t.status='replied'; t.adminNote = msg; localStorage.setItem('nh_tickets',JSON.stringify(tickets)); renderTickets(); alert('Balasan disimpan'); } }
+function closeTicketAdmin(id){ const t = tickets.find(x=>x.id===id); if(!t) return; t.status='closed'; localStorage.setItem('nh_tickets',JSON.stringify(tickets)); renderTickets(); alert('Ticket ditutup'); }
+function deleteTicket(id){ if(!confirm('Hapus tiket?')) return; tickets = tickets.filter(x=>x.id!==id); localStorage.setItem('nh_tickets',JSON.stringify(tickets)); renderTickets(); alert('Ticket dihapus'); }
 
-/* Admin panel open/close */
-function openAdmin(){
-  if(!sessionStorage.getItem('nh_admin')){ openLogin(); return; }
-  document.getElementById('adminPanel').style.display = 'flex';
-  renderOrders(); renderTickets(); renderProductManage();
-}
-function closeAdmin(){ document.getElementById('adminPanel').style.display = 'none'; }
+// manage products
+function renderProductManage(){ const el=document.getElementById('productManageList'); el.innerHTML=''; products.forEach(p=>{ const d=document.createElement('div'); d.className='ticket-card'; d.innerHTML = `<div style=\"display:flex;justify-content:space-between;align-items:center\"><div><strong>${p.title}</strong><div class=\"small\">${formatRp(p.price)}</div></div><div style=\"display:flex;gap:8px\"><button class=\"ghost\" onclick=\"editProduct(${p.id})\">Edit</button><button class=\"ghost\" onclick=\"removeProduct(${p.id})\">Hapus</button></div></div>`; el.appendChild(d); }); }
 
-/* =========================
-   Manage Orders (admin)
-   ========================= */
-function renderOrders(){
-  const tbody = document.getElementById('ordersTbody'); tbody.innerHTML = '';
-  orders.forEach(o=>{
-    const tr = document.createElement('tr');
-    const itemsSummary = o.items.map(i=>`${i.title} x${i.qty}`).join(', ');
-    tr.innerHTML = `<td>${o.mcName}</td>
-      <td style="white-space:nowrap">${itemsSummary}</td>
-      <td>${formatRp(o.total)}</td>
-      <td style="white-space:nowrap">${new Date(o.created).toLocaleString()}</td>
-      <td style="white-space:nowrap">
-        <button class="btn-ghost" onclick="copyCommands(${o.id})">Copy Cmds</button>
-        <button class="btn-ghost" onclick="markFulfilled(${o.id})">Mark</button>
-        <button class="ghost" onclick="deleteOrder(${o.id})">Delete</button>
-      </td>`;
-    tbody.appendChild(tr);
-  });
-}
+function saveProduct(){ if(!sessionStorage.getItem('nh_admin')){ alert('Login admin dulu'); return; } const title=document.getElementById('newTitle').value.trim(); const price=parseInt(document.getElementById('newPrice').value); const img=document.getElementById('newImg').value.trim() || ''; if(!title||isNaN(price)){ alert('Nama produk & harga valid diperlukan'); return; } if(editingProductId){ const idx=products.findIndex(x=>x.id===editingProductId); if(idx!==-1){ products[idx].title=title; products[idx].price=price; products[idx].img=img; products[idx].desc=title; alert('Produk diperbarui'); } editingProductId=null; document.getElementById('saveProductBtn').innerText='Tambah / Simpan'; } else { const id=Date.now(); products.unshift({id,title,price,desc:title,img,category:'ranks'}); alert('Produk ditambahkan'); } localStorage.setItem('nh_products',JSON.stringify(products)); renderProducts(); renderProductManage(); resetNewProduct(); }
 
-function copyCommands(orderId){
-  const o = orders.find(x=>x.id===orderId);
-  if(!o) return alert('Order tidak ditemukan');
-  let cmds = `# Commands for ${o.mcName}\n`;
-  o.items.forEach(it=>{
-    // parse rank from title: "Rank • Titan" => titan
-    const rank = (it.title.split('•')[1]||it.title).trim().toLowerCase().split(' ')[0];
-    cmds += `lp user ${o.mcName} parent set ${rank}\n`;
-  });
-  navigator.clipboard.writeText(cmds).then(()=> alert('Commands disalin ke clipboard')).catch(()=> prompt('Copy commands:',cmds));
-}
+function editProduct(id){ if(!sessionStorage.getItem('nh_admin')){ alert('Login admin dulu'); return; } const p=products.find(x=>x.id===id); if(!p) return; editingProductId=id; document.getElementById('newTitle').value=p.title; document.getElementById('newPrice').value=p.price; document.getElementById('newImg').value=p.img; document.getElementById('saveProductBtn').innerText='Simpan Perubahan'; openAdmin(); }
+function removeProduct(id){ if(!confirm('Hapus produk?')) return; products=products.filter(x=>x.id!==id); localStorage.setItem('nh_products',JSON.stringify(products)); renderProducts(); renderProductManage(); alert('Produk dihapus'); }
+function resetNewProduct(){ document.getElementById('newTitle').value=''; document.getElementById('newPrice').value=''; document.getElementById('newImg').value=''; editingProductId=null; document.getElementById('saveProductBtn').innerText='Tambah / Simpan'; }
 
-function markFulfilled(id){
-  const i = orders.findIndex(x=>x.id===id); if(i===-1) return;
-  orders[i].status = 'fulfilled'; save('nh_orders', orders); renderOrders(); alert('Order ditandai fulfilled');
-}
-function deleteOrder(id){
-  if(!confirm('Hapus order ini?')) return;
-  orders = orders.filter(x=>x.id!==id); save('nh_orders', orders); renderOrders(); alert('Order dihapus');
-}
+// export/import
+function exportData(){ const data={products,orders,tickets}; const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='nebulahc-data.json'; a.click(); URL.revokeObjectURL(url); }
+function importData(){ const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ try{ const d=JSON.parse(ev.target.result); if(d.products) products=d.products; if(d.orders) orders=d.orders; if(d.tickets) tickets=d.tickets; localStorage.setItem('nh_products',JSON.stringify(products)); localStorage.setItem('nh_orders',JSON.stringify(orders)); localStorage.setItem('nh_tickets',JSON.stringify(tickets)); renderProducts(); renderOrders(); renderTickets(); renderProductManage(); alert('Import selesai'); }catch(err){ alert('File tidak valid'); } }; r.readAsText(f); }; inp.click(); }
 
-/* =========================
-   Tickets (admin)
-   ========================= */
-function renderTickets(){
-  const el = document.getElementById('ticketsList'); el.innerHTML = '';
-  if(!tickets.length){ el.innerHTML = '<div class="small">Belum ada tiket.</div>'; return; }
-  tickets.forEach(t=>{
-    const d = document.createElement('div'); d.className = 'ticket-card';
-    d.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div><strong>${t.user}</strong> <span class="small">• ${new Date(t.created).toLocaleString()}</span><div class="small">(${t.category}) ${t.email? '• '+t.email : ''}</div></div>
-      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-        <div class="small">Status: <strong>${t.status}</strong></div>
-        <div>
-          <button class="btn-ghost" onclick="replyTicket(${t.id})">Reply</button>
-          <button class="ghost" onclick="closeTicketAdmin(${t.id})">Close</button>
-          <button class="ghost" onclick="deleteTicket(${t.id})">Delete</button>
-        </div>
-      </div>
-    </div>
-    <div style="margin-top:8px;white-space:pre-line" class="small">${t.desc}</div>`;
-    el.appendChild(d);
-  });
-}
-
-function replyTicket(id){
-  const t = tickets.find(x=>x.id===id); if(!t) return;
-  const msg = prompt('Balas tiket (akan disimpan di catatan admin):','Terima kasih, tiket Anda sedang diproses.');
-  if(msg !== null){
-    // store admin reply as status change and a note
-    t.status = 'replied';
-    t.adminNote = msg;
-    save('nh_tickets', tickets);
-    renderTickets();
-    alert('Balasan disimpan (tidak mengirim email).');
-  }
-}
-function closeTicketAdmin(id){ const t = tickets.find(x=>x.id===id); if(!t) return; t.status='closed'; save('nh_tickets', tickets); renderTickets(); alert('Ticket ditutup.'); }
-function deleteTicket(id){ if(!confirm('Hapus tiket?')) return; tickets = tickets.filter(x=>x.id!==id); save('nh_tickets', tickets); renderTickets(); }
-
-/* =========================
-   Manage Products (admin)
-   ========================= */
-function renderProductManage(){
-  const el = document.getElementById('productManageList'); el.innerHTML = '';
-  products.forEach(p=>{
-    const d = document.createElement('div'); d.className = 'ticket-card';
-    d.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
-      <div><strong>${p.title}</strong><div class="small">${formatRp(p.price)} • ${p.category || 'ranks'}</div></div>
-      <div style="display:flex;gap:8px">
-        <button class="ghost" onclick="editProduct(${p.id})">Edit</button>
-        <button class="ghost" onclick="removeProduct(${p.id})">Hapus</button>
-      </div>
-    </div>`;
-    el.appendChild(d);
-  });
-}
-function renderProductList(){ renderProducts(); renderAdminBadge(); }
-
-function saveProduct(){
-  if(!sessionStorage.getItem('nh_admin')){ alert('Harus login admin'); return; }
-  const title = document.getElementById('newTitle').value.trim();
-  const price = parseInt(document.getElementById('newPrice').value);
-  const img = document.getElementById('newImg').value.trim() || 'https://images.unsplash.com/photo-1605902711622-cfb43c44367e?auto=format&fit=crop&w=800&q=60';
-  if(!title || isNaN(price)){ alert('Masukkan nama produk & harga yang valid'); return; }
-
-  if(editingProductId){
-    const idx = products.findIndex(x=>x.id===editingProductId);
-    if(idx!==-1){
-      products[idx].title = title; products[idx].price = price; products[idx].img = img; products[idx].desc = title;
-      alert('Produk diperbarui');
-    }
-    editingProductId = null;
-    document.getElementById('saveProductBtn').innerText = 'Tambah / Simpan';
-  } else {
-    const id = Date.now();
-    products.unshift({ id, title, price, desc: title, img, category: 'ranks' });
-    alert('Produk ditambahkan');
-  }
-  save('nh_products', products); renderProducts(); renderProductManage();
-  resetNewProduct();
-}
-
-function resetNewProduct(){ document.getElementById('newTitle').value=''; document.getElementById('newPrice').value=''; document.getElementById('newImg').value=''; editingProductId=null; document.getElementById('saveProductBtn').innerText = 'Tambah / Simpan' }
-function editProduct(id){
-  if(!sessionStorage.getItem('nh_admin')){ alert('Harus login admin'); return; }
-  const p = products.find(x=>x.id===id); if(!p) return;
-  editingProductId = id;
-  document.getElementById('newTitle').value = p.title;
-  document.getElementById('newPrice').value = p.price;
-  document.getElementById('newImg').value = p.img;
-  document.getElementById('saveProductBtn').innerText = 'Simpan Perubahan';
-  openAdmin();
-}
-function removeProduct(id){ if(!confirm('Hapus produk ini?')) return; products = products.filter(x=>x.id!==id); save('nh_products', products); renderProducts(); renderProductManage(); }
-
-/* =========================
-   Export / Import
-   ========================= */
-function exportData(){
-  const data = { products, orders, tickets };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'nebulahc-data.json'; a.click();
-  URL.revokeObjectURL(url);
-}
-function importData(){
-  const input = document.createElement('input'); input.type='file'; input.accept='application/json';
-  input.onchange = e => {
-    const f = e.target.files[0];
-    if(!f) return;
-    const r = new FileReader();
-    r.onload = ev => {
-      try {
-        const d = JSON.parse(ev.target.result);
-        if(d.products) products = d.products;
-        if(d.orders) orders = d.orders;
-        if(d.tickets) tickets = d.tickets;
-        save('nh_products', products); save('nh_orders', orders); save('nh_tickets', tickets);
-        renderProducts(); renderOrders(); renderTickets(); renderProductManage();
-        alert('Import selesai');
-      } catch(err){ alert('File tidak valid'); }
-    };
-    r.readAsText(f);
-  };
-  input.click();
-}
-
-/* =========================
-   Utilities: search, details
-   ========================= */
-function searchItems(){ renderProducts(); }
-function viewDetails(id){
-  const p = products.find(x=>x.id===id); if(!p) return;
-  alert(`${p.title}\n\n${p.desc}\nHarga: ${formatRp(p.price)}\nServer: play.nebulahc.my.id`);
-}
-
-/* =========================
-   Initialization
-   ========================= */
-function init(){
-  renderProducts();
-  renderCartCount();
-  renderAdminBadge();
-}
+// init
+function init(){ renderProducts(); renderCartCount(); renderAdminBadge(); renderTickets(); }
 init();
 
-/* accessible functions for buttons used in HTML */
-window.quickAdd = quickAdd;
-window.openCart = openCart;
-window.closeCart = closeCart;
-window.openLogin = openLogin;
-window.closeLogin = closeLogin;
-window.doAdminLogin = doAdminLogin;
-window.openAdmin = openAdmin;
-window.closeAdmin = closeAdmin;
-window.logoutAdmin = logoutAdmin;
-window.openTicket = openTicket;
-window.closeTicket = closeTicket;
-window.submitTicket = submitTicket;
-window.addToCart = addToCart;
-window.checkout = checkout;
-window.saveProduct = saveProduct;
-window.editProduct = editProduct;
-window.removeProduct = removeProduct;
-window.exportData = exportData;
-window.importData = importData;
-window.resetNewProduct = resetNewProduct;
+// expose some functions globally
+window.openCart=openCart; window.openTicket=openTicket; window.openLogin=openLogin; window.openAdmin=openAdmin; window.quickAdd=quickAdd; window.addToCart=addToCart; window.checkout=checkout; window.saveProduct=saveProduct; window.editProduct=editProduct; window.removeProduct=removeProduct; window.exportData=exportData; window.importData=importData;
 </script>
-
 </body>
 </html>
+"""
+
+# write file
+out_path = "/mnt/data/index.html"
+with open(out_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+out_path
+
