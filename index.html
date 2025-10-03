@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>NEBULATIERS Rankings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Roboto', sans-serif; background:#111; color:#eee; text-align:center; }
+    .hidden { display: none; }
+    .admin-panel {
+      margin: 20px auto;
+      max-width: 400px;
+      background: rgba(0,0,0,0.7);
+      padding: 20px;
+      border: 2px solid #8a2be2;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(138,43,226,0.5);
+    }
+    input, button {
+      padding: 10px;
+      margin: 8px;
+      width: 80%;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background: #8a2be2;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { background: #6c1cb8; }
+    .rankings { margin-top: 20px; }
+    .rank-card {
+      background: #222;
+      margin: 10px auto;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 300px;
+      box-shadow: 0 0 10px rgba(138,43,226,0.3);
+    }
+    .rank-card h3 { margin: 0; color: #8a2be2; }
+  </style>
+</head>
+<body>
+  <h1>🌐 NEBULATIERS Rankings</h1>
+  <p>Leaderboard PvP Players</p>
+
+  <!-- Ranking list -->
+  <div id="ranking" class="rankings"></div>
+
+  <!-- Admin panel (hidden kalau bukan IP admin) -->
+  <div id="adminPanel" class="admin-panel hidden">
+    <h2>🔧 Admin Panel</h2>
+    <input type="text" id="playerName" placeholder="Nama Player">
+    <input type="text" id="playerTier" placeholder="Tier (HT / LT)">
+    <button onclick="addPlayer()">Tambah Player</button>
+  </div>
+
+  <script>
+    const allowedIP = "103.156.161.210";
+    const ranking = document.getElementById("ranking");
+    const adminPanel = document.getElementById("adminPanel");
+
+    let players = [
+      { name: "ProGamer123", tier: "HT 5" },
+      { name: "SwordMaster", tier: "HT 4" }
+    ];
+
+    function renderRanking() {
+      ranking.innerHTML = "";
+      players.forEach((p, i) => {
+        ranking.innerHTML += `
+          <div class="rank-card">
+            <h3>${i+1}. ${p.name}</h3>
+            <p>Tier: ${p.tier}</p>
+          </div>
+        `;
+      });
+    }
+
+    function addPlayer() {
+      const name = document.getElementById("playerName").value;
+      const tier = document.getElementById("playerTier").value;
+      if(name && tier) {
+        players.push({ name, tier });
+        renderRanking();
+      }
+    }
+
+    // Cek IP user via API
+    fetch("https://api.ipify.org?format=json")
+      .then(res => res.json())
+      .then(data => {
+        console.log("IP kamu:", data.ip);
+        if(data.ip === allowedIP) {
+          adminPanel.classList.remove("hidden");
+        }
+      });
+
+    renderRanking();
+  </script>
+</body>
+</html>
