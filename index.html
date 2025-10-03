@@ -1,256 +1,239 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nebula Hardcore Store</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      margin: 0;
-      padding: 0;
-      transition: background 0.3s, color 0.3s;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      margin: 0; padding: 0;
+      background: #0a0a0f;
+      color: #fff;
     }
-    body.dark { background: #18181b; color: #f3f4f6; }
     header {
-      background: #4f46e5;
-      color: white;
-      padding: 15px;
+      padding: 20px;
       text-align: center;
-      font-size: 20px;
+      background: linear-gradient(90deg,#6e00ff,#00c3ff);
+      font-size: 26px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+    .store {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background: #151522;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,.3);
+      transition: transform .3s;
+      text-align: center;
+    }
+    .card:hover { transform: scale(1.05); }
+    .price { color: #00e0ff; font-size: 18px; margin: 10px 0; }
+    button {
+      padding: 10px 16px;
+      border: none; border-radius: 10px;
+      background: linear-gradient(90deg,#6e00ff,#00c3ff);
+      color: #fff; cursor: pointer;
       font-weight: bold;
     }
-    .container {
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 15px;
-      background: white;
+    button:hover { opacity: 0.8; }
+
+    .actions { text-align: center; margin: 20px; }
+    #cartBox, #loginBox, #ticketBox, #adminPanel { display: none; }
+
+    .modal {
+      background: #111;
+      padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 320px;
+      margin: 50px auto;
+      box-shadow: 0 0 20px rgba(0,0,0,.6);
+      text-align: center;
     }
-    body.dark .container { background: #27272a; }
-    .hidden { display: none; }
-    .ticket {
-      border: 1px solid #ddd;
-      border-radius: 10px;
+    input, textarea, select {
+      width: 90%;
+      margin: 8px 0;
       padding: 10px;
-      margin-bottom: 12px;
-      background: #fafafa;
-    }
-    body.dark .ticket { background: #3f3f46; border-color: #555; }
-    .ticket.high { border-left: 5px solid red; }
-    .ticket.medium { border-left: 5px solid orange; }
-    .ticket.low { border-left: 5px solid green; }
-    .ticket-header {
-      font-weight: bold;
-      display: flex;
-      justify-content: space-between;
-    }
-    .btn {
-      padding: 8px 12px;
+      border-radius: 8px;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin: 3px;
-      font-size: 14px;
+      outline: none;
     }
-    .btn-primary { background: #4f46e5; color: white; }
-    .btn-danger { background: #dc2626; color: white; }
-    .btn-success { background: #16a34a; color: white; }
-    .btn-light { background: #e5e7eb; }
-    .input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      margin: 6px 0;
-      border: 1px solid #ddd;
-      border-radius: 6px;
+    textarea { resize: none; height: 100px; }
+    .ticket {
+      background: #1a1a2a;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: left;
     }
-    textarea { resize: vertical; }
     .reply {
-      margin-top: 8px;
-      padding: 6px;
-      border-left: 3px solid #4f46e5;
-      background: #eef2ff;
+      margin: 6px 0 0 15px;
+      padding: 5px 8px;
+      background: #222;
       border-radius: 6px;
-    }
-    body.dark .reply { background: #1e1b4b; }
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      font-size: 13px;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <header>
-    Ticket Support System
-  </header>
-  
-  <div class="container" id="loginContainer">
-    <h2>Login</h2>
-    <input class="input" id="username" placeholder="Username">
-    <input class="input" id="password" type="password" placeholder="Password">
-    <button class="btn btn-primary" onclick="login()">Login</button>
-    <p><small>Login sebagai <b>admin</b> gunakan password: <code>admin123</code></small></p>
+  <header>Nebula Hardcore Store</header>
+
+  <!-- Store Produk -->
+  <section class="store" id="store">
+    <div class="card"><h3>Voidling</h3><p class="price">Rp15.000</p><button onclick="addToCart('Voidling',15000)">Beli</button></div>
+    <div class="card"><h3>Phantom</h3><p class="price">Rp30.000</p><button onclick="addToCart('Phantom',30000)">Beli</button></div>
+    <div class="card"><h3>Warlord</h3><p class="price">Rp60.000</p><button onclick="addToCart('Warlord',60000)">Beli</button></div>
+    <div class="card"><h3>Overseer</h3><p class="price">Rp90.000</p><button onclick="addToCart('Overseer',90000)">Beli</button></div>
+    <div class="card"><h3>Eternal</h3><p class="price">Rp100.000</p><button onclick="addToCart('Eternal',100000)">Beli</button></div>
+    <div class="card"><h3>Titan</h3><p class="price">Rp130.000</p><button onclick="addToCart('Titan',130000)">Beli</button></div>
+  </section>
+
+  <div class="actions">
+    <button onclick="showCart()">Lihat Keranjang</button>
+    <button onclick="showTicket()">Buat Ticket</button>
+    <button onclick="showLogin()">Login Admin</button>
   </div>
-  
-  <div class="container hidden" id="mainContainer">
-    <div class="topbar">
-      <div>Halo, <span id="userRole"></span></div>
-      <div>
-        <button class="btn btn-light" onclick="toggleTheme()">🌙 Mode</button>
-        <button class="btn btn-danger" onclick="logout()">Logout</button>
-      </div>
-    </div>
-    <hr>
-    
-    <!-- User Ticket Form -->
-    <div id="userSection" class="hidden">
-      <h2>Buat Tiket Baru</h2>
-      <input class="input" id="ticketTitle" placeholder="Judul Tiket">
-      <select id="ticketCategory" class="input">
-        <option>Bug</option>
-        <option>Report Player</option>
-        <option>Pertanyaan</option>
-        <option>Lainnya</option>
-      </select>
-      <select id="ticketPriority" class="input">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-      <textarea id="ticketMessage" class="input" rows="3" placeholder="Deskripsi masalah..."></textarea>
-      <button class="btn btn-success" onclick="createTicket()">Buat Tiket</button>
-    </div>
-    
-    <!-- Admin Controls -->
-    <div id="adminSection" class="hidden">
-      <h2>Panel Admin</h2>
-      <input id="searchBox" class="input" placeholder="Cari tiket..." oninput="renderTickets()">
-      <select id="filterStatus" class="input" onchange="renderTickets()">
-        <option value="all">Semua Status</option>
-        <option value="open">Open</option>
-        <option value="closed">Closed</option>
-      </select>
-    </div>
-    
-    <h2>Daftar Tiket</h2>
+
+  <!-- Cart -->
+  <div id="cartBox" class="modal">
+    <h2>Keranjang</h2>
+    <div id="cartItems"></div>
+    <p id="cartTotal"></p>
+    <button onclick="checkout()">Checkout</button>
+    <button onclick="closeBox('cartBox')">Tutup</button>
+  </div>
+
+  <!-- Ticket Form -->
+  <div id="ticketBox" class="modal">
+    <h2>Buat Ticket</h2>
+    <input type="text" id="tUser" placeholder="Username">
+    <input type="email" id="tEmail" placeholder="Email">
+    <select id="tCat">
+      <option>Rank</option>
+      <option>Pembayaran</option>
+      <option>Lainnya</option>
+    </select>
+    <textarea id="tDesc" placeholder="Deskripsi masalah..."></textarea>
+    <button onclick="submitTicket()">Kirim Ticket</button>
+    <button onclick="closeBox('ticketBox')">Tutup</button>
+  </div>
+
+  <!-- Login Admin -->
+  <div id="loginBox" class="modal">
+    <h2>Admin Login</h2>
+    <input type="text" id="user" placeholder="Username">
+    <input type="password" id="pass" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p style="font-size:12px;">Default: <b>admin / nebula123</b></p>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="adminPanel" class="modal" style="width:80%; max-width:800px;">
+    <h2>Admin Panel</h2>
+    <h3>Tambah Produk</h3>
+    <input type="text" id="newProduct" placeholder="Nama Produk">
+    <input type="number" id="newPrice" placeholder="Harga">
+    <button onclick="addProduct()">Tambah Produk</button>
+    <h3>Daftar Produk</h3>
+    <div id="productList"></div>
+    <h3>Daftar Ticket</h3>
     <div id="ticketList"></div>
+    <button onclick="closeBox('adminPanel')">Tutup</button>
   </div>
-  
-  <script>
-    let currentUser = null;
-    let tickets = JSON.parse(localStorage.getItem("tickets") || "[]");
-    
-    function saveTickets() {
-      localStorage.setItem("tickets", JSON.stringify(tickets));
+
+<script>
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+
+  // CART
+  function addToCart(name, price){
+    cart.push({name, price});
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert(name+" ditambahkan ke keranjang!");
+  }
+  function showCart(){
+    document.getElementById("cartBox").style.display="block";
+    let items = document.getElementById("cartItems");
+    items.innerHTML="";
+    let total=0;
+    cart.forEach((c,i)=>{
+      items.innerHTML+=`<div>${c.name} - Rp${c.price} <button onclick="removeCart(${i})">X</button></div>`;
+      total+=c.price;
+    });
+    document.getElementById("cartTotal").innerText="Total: Rp"+total;
+  }
+  function removeCart(i){ cart.splice(i,1); localStorage.setItem("cart",JSON.stringify(cart)); showCart(); }
+  function checkout(){ alert("Checkout berhasil! Hubungi admin WA."); cart=[]; localStorage.removeItem("cart"); showCart(); }
+
+  // LOGIN
+  function showLogin(){ document.getElementById('loginBox').style.display='block'; }
+  function login(){
+    let u=document.getElementById('user').value;
+    let p=document.getElementById('pass').value;
+    if(u=="admin" && p=="nebula123"){
+      document.getElementById('loginBox').style.display='none';
+      document.getElementById('adminPanel').style.display='block';
+      refreshTickets();
+    } else alert("Login gagal!");
+  }
+
+  // PRODUCT
+  function addProduct(){
+    let name=document.getElementById('newProduct').value;
+    let price=document.getElementById('newPrice').value;
+    if(name && price){
+      let div=document.createElement("div");
+      div.className="ticket";
+      div.innerHTML=`<b>${name}</b> - Rp${price} <button onclick="this.parentElement.remove()">Hapus</button>`;
+      document.getElementById("productList").appendChild(div);
     }
-    
-    function login() {
-      let user = document.getElementById("username").value.trim();
-      let pass = document.getElementById("password").value;
-      
-      if (!user) { alert("Isi username!"); return; }
-      
-      if (user === "admin" && pass === "admin123") {
-        currentUser = { name: "Admin", role: "admin" };
-      } else {
-        currentUser = { name: user, role: "user" };
-      }
-      
-      document.getElementById("loginContainer").classList.add("hidden");
-      document.getElementById("mainContainer").classList.remove("hidden");
-      document.getElementById("userRole").innerText = currentUser.role + " (" + currentUser.name + ")";
-      
-      if (currentUser.role === "user") {
-        document.getElementById("userSection").classList.remove("hidden");
-      } else {
-        document.getElementById("adminSection").classList.remove("hidden");
-      }
-      
-      renderTickets();
-    }
-    
-    function logout() {
-      currentUser = null;
-      document.getElementById("loginContainer").classList.remove("hidden");
-      document.getElementById("mainContainer").classList.add("hidden");
-    }
-    
-    function createTicket() {
-      let title = document.getElementById("ticketTitle").value;
-      let category = document.getElementById("ticketCategory").value;
-      let priority = document.getElementById("ticketPriority").value;
-      let message = document.getElementById("ticketMessage").value;
-      
-      if (!title || !message) { alert("Isi semua field!"); return; }
-      
-      let newTicket = {
-        id: Date.now(),
-        title, category, priority,
-        message,
-        user: currentUser.name,
-        status: "open",
-        replies: []
-      };
-      
-      tickets.push(newTicket);
-      saveTickets();
-      renderTickets();
-      
-      document.getElementById("ticketTitle").value = "";
-      document.getElementById("ticketMessage").value = "";
-    }
-    
-    function replyTicket(id) {
-      let reply = prompt("Balas tiket:");
-      if (!reply) return;
-      let ticket = tickets.find(t => t.id === id);
-      ticket.replies.push({ from: currentUser.name, message: reply, date: new Date().toLocaleString() });
-      saveTickets();
-      renderTickets();
-    }
-    
-    function closeTicket(id) {
-      let ticket = tickets.find(t => t.id === id);
-      ticket.status = "closed";
-      saveTickets();
-      renderTickets();
-    }
-    
-    function renderTickets() {
-      let list = document.getElementById("ticketList");
-      list.innerHTML = "";
-      
-      let search = document.getElementById("searchBox")?.value.toLowerCase() || "";
-      let filter = document.getElementById("filterStatus")?.value || "all";
-      
-      tickets.filter(t => 
-        (currentUser.role === "admin" || t.user === currentUser.name) &&
-        (t.title.toLowerCase().includes(search) || t.message.toLowerCase().includes(search)) &&
-        (filter === "all" || t.status === filter)
-      ).forEach(t => {
-        let div = document.createElement("div");
-        div.className = `ticket ${t.priority}`;
-        div.innerHTML = `
-          <div class="ticket-header">
-            <span>[${t.status.toUpperCase()}] ${t.title} - <small>${t.category}</small></span>
-            <span>By: ${t.user}</span>
-          </div>
-          <p>${t.message}</p>
-          ${t.replies.map(r => `<div class="reply"><b>${r.from}:</b> ${r.message} <br><small>${r.date}</small></div>`).join("")}
-          ${currentUser.role === "admin" && t.status === "open" ? `
-            <button class="btn btn-success" onclick="replyTicket(${t.id})">Balas</button>
-            <button class="btn btn-danger" onclick="closeTicket(${t.id})">Tutup</button>
-          ` : ""}
-        `;
-        list.appendChild(div);
+  }
+
+  // TICKET
+  function showTicket(){ document.getElementById('ticketBox').style.display='block'; }
+  function submitTicket(){
+    let u=document.getElementById('tUser').value;
+    let e=document.getElementById('tEmail').value;
+    let c=document.getElementById('tCat').value;
+    let d=document.getElementById('tDesc').value;
+    if(u && e && d){
+      tickets.push({user:u,email:e,cat:c,desc:d,replies:[]});
+      localStorage.setItem("tickets",JSON.stringify(tickets));
+      alert("Ticket berhasil dikirim!");
+      document.getElementById('ticketBox').style.display='none';
+    } else alert("Isi semua field!");
+  }
+  function refreshTickets(){
+    let list=document.getElementById("ticketList");
+    list.innerHTML="";
+    tickets.forEach((t,i)=>{
+      let div=document.createElement("div");
+      div.className="ticket";
+      div.innerHTML=`<b>${t.user}</b> (${t.email})<br>Kategori: ${t.cat}<br>${t.desc}<div id="replies${i}"></div>
+      <input type="text" id="reply${i}" placeholder="Balas..."><button onclick="replyTicket(${i})">Kirim</button>`;
+      list.appendChild(div);
+      t.replies.forEach(r=>{
+        document.getElementById("replies"+i).innerHTML+=`<div class="reply">Admin: ${r}</div>`;
       });
+    });
+  }
+  function replyTicket(i){
+    let txt=document.getElementById("reply"+i).value;
+    if(txt){
+      tickets[i].replies.push(txt);
+      localStorage.setItem("tickets",JSON.stringify(tickets));
+      refreshTickets();
     }
-    
-    function toggleTheme() {
-      document.body.classList.toggle("dark");
-    }
-  </script>
+  }
+
+  function closeBox(id){ document.getElementById(id).style.display="none"; }
+</script>
 </body>
 </html>
