@@ -5,64 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nebula Hardcore Store</title>
   <style>
+    /* ==== GLOBAL STYLE ==== */
+    *{box-sizing:border-box;}
     body {
       margin:0; font-family:'Poppins',sans-serif;
       background:linear-gradient(135deg,#0a0a0f,#1a1a2a);
       color:#fff; display:flex; height:100vh; overflow:hidden;
     }
-    /* Sidebar */
-    .sidebar {
-      width:220px; background:#111; padding:20px;
-      display:flex; flex-direction:column;
-    }
-    .sidebar h2 { margin:0 0 20px; text-align:center; color:#6e00ff; }
-    .sidebar a {
-      padding:12px; margin:6px 0;
-      background:rgba(255,255,255,0.05);
-      border-radius:8px; cursor:pointer;
-      transition:.3s; text-decoration:none; color:#fff;
-    }
-    .sidebar a:hover { background:rgba(255,255,255,0.15); }
-    /* Content */
-    .content { flex:1; padding:20px; overflow-y:auto; }
-    .page { display:none; }
-    .page.active { display:block; }
-    /* Store */
-    .store {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-      gap:20px;
-    }
-    .card {
-      background:rgba(255,255,255,0.05);
-      border-radius:15px;
-      padding:20px;
-      backdrop-filter:blur(6px);
-      transition:.3s;
-    }
-    .card:hover { transform:scale(1.05); }
-    .price { color:#00e0ff; font-size:18px; margin:10px 0; }
+    h2{margin:10px 0;}
     button {
       padding:10px 16px; border:none; border-radius:8px;
       background:linear-gradient(90deg,#6e00ff,#00c3ff);
       color:#fff; font-weight:bold; cursor:pointer; transition:.3s;
     }
     button:hover { opacity:.85; }
-    /* Ticket */
-    .ticket {
+
+    /* ==== SIDEBAR ==== */
+    .sidebar {
+      width:220px; background:rgba(20,20,35,0.9);
+      padding:20px; display:flex; flex-direction:column;
+      backdrop-filter:blur(8px); border-right:1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar h2 { text-align:center; color:#6e00ff; margin-bottom:20px; }
+    .sidebar a {
+      padding:12px; margin:6px 0;
       background:rgba(255,255,255,0.05);
-      padding:12px; border-radius:10px; margin:10px 0;
+      border-radius:8px; cursor:pointer; transition:.3s;
+      text-decoration:none; color:#fff; display:block;
     }
-    .ticket .status { font-size:12px; color:#0ff; }
-    .chat-box {
-      background:#222; padding:10px; border-radius:8px;
-      margin-top:10px; max-height:150px; overflow-y:auto;
-      font-size:14px;
+    .sidebar a:hover { background:rgba(255,255,255,0.15); }
+
+    /* ==== CONTENT ==== */
+    .content { flex:1; padding:20px; overflow-y:auto; }
+    .page { display:none; animation:fade .4s; }
+    .page.active { display:block; }
+    @keyframes fade{from{opacity:0;}to{opacity:1;}}
+
+    /* ==== STORE ==== */
+    .store {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:20px;
     }
-    .msg { margin:4px 0; }
-    .msg.admin { color:#6e00ff; }
-    .msg.user { color:#0ff; }
-    /* Modal */
+    .card {
+      background:rgba(255,255,255,0.05);
+      border-radius:15px; padding:20px; text-align:center;
+      backdrop-filter:blur(8px); transition:.3s;
+      box-shadow:0 0 15px rgba(0,0,0,.3);
+    }
+    .card:hover { transform:translateY(-5px); }
+    .card h3{margin:0;}
+    .price { color:#00e0ff; font-size:18px; margin:10px 0; }
+
+    /* ==== TICKETS ==== */
+    .ticket-box {
+      background:rgba(255,255,255,0.05);
+      border-radius:12px; padding:10px; margin:10px 0;
+    }
+    .chat {
+      max-height:300px; overflow-y:auto; padding:10px;
+      background:rgba(0,0,0,0.2); border-radius:8px;
+    }
+    .bubble {
+      padding:10px 14px; border-radius:12px; margin:6px 0; max-width:80%;
+      animation:fade .3s;
+    }
+    .user { background:#6e00ff; align-self:flex-start; }
+    .admin { background:#00c3ff; align-self:flex-end; margin-left:auto; }
+    .chat-input {display:flex; gap:8px; margin-top:10px;}
+
+    /* ==== MODAL ==== */
     .modal {
       position:fixed; top:0; left:0; right:0; bottom:0;
       background:rgba(0,0,0,0.7); display:flex;
@@ -77,7 +88,8 @@
       border-radius:8px; border:none; outline:none;
     }
     textarea { resize:none; height:80px; }
-    /* Toast */
+
+    /* ==== TOAST ==== */
     .toast {
       position:fixed; bottom:20px; right:20px;
       background:#222; padding:12px 20px; border-radius:8px;
@@ -89,10 +101,10 @@
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>Nebula Store</h2>
+    <h2>Nebula HC</h2>
     <a onclick="showPage('store')">🛒 Store</a>
     <a onclick="showPage('tickets')">🎟 Tickets</a>
-    <a onclick="showPage('adminLogin')">⚙️ Admin</a>
+    <a onclick="showPage('adminLogin')">🔐 Admin</a>
   </div>
 
   <!-- Content -->
@@ -113,9 +125,10 @@
     <!-- Admin Login -->
     <section id="adminLogin" class="page">
       <h2>Login Admin</h2>
-      <input type="text" id="adminUser" placeholder="Username">
-      <input type="password" id="adminPass" placeholder="Password">
-      <button onclick="loginAdmin()">Login</button>
+      <input type="text" id="aUser" placeholder="Username">
+      <input type="password" id="aPass" placeholder="Password">
+      <button onclick="adminLogin()">Login</button>
+      <p style="font-size:12px;">Default: <b>admin / nebula123</b></p>
     </section>
 
     <!-- Admin Panel -->
@@ -154,25 +167,20 @@
   <div class="toast" id="toast"></div>
 
 <script>
-  // Admin credentials
-  const ADMIN_USER="admin", ADMIN_PASS="1234";
-  let adminLogged=false;
-
-  // Navigation
+  // NAVIGATION
   function showPage(id){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
   }
 
-  // Toast
+  // TOAST
   function toast(msg){
     let t=document.getElementById("toast");
-    t.textContent=msg;
-    t.classList.add("show");
+    t.textContent=msg; t.classList.add("show");
     setTimeout(()=>t.classList.remove("show"),3000);
   }
 
-  // Products
+  // PRODUCTS
   let products=JSON.parse(localStorage.getItem("products"))||[
     {name:"Voidling",price:15000},
     {name:"Phantom",price:30000},
@@ -181,7 +189,6 @@
     {name:"Eternal",price:100000},
     {name:"Titan",price:130000}
   ];
-
   function renderStore(){
     let store=document.getElementById("storeList");
     store.innerHTML="";
@@ -194,120 +201,103 @@
       </div>`;
     });
   }
-  renderStore();
-
-  function renderAdmin(){
+  function renderAdminProducts(){
     let list=document.getElementById("adminProductList");
     list.innerHTML="";
     products.forEach((p,i)=>{
       list.innerHTML+=`
-        <div class="ticket">
+        <div class="ticket-box">
           <b>${p.name}</b> - Rp${p.price.toLocaleString()}
           <button onclick="deleteProduct(${i})">Hapus</button>
         </div>`;
     });
-    renderAdminTickets();
   }
-
   function addProduct(){
     let n=document.getElementById("pName").value;
     let pr=parseInt(document.getElementById("pPrice").value);
     if(n&&pr){
       products.push({name:n,price:pr});
       localStorage.setItem("products",JSON.stringify(products));
-      renderStore(); renderAdmin();
+      renderStore(); renderAdminProducts();
       toast("Produk ditambah!");
     }
   }
   function deleteProduct(i){
     products.splice(i,1);
     localStorage.setItem("products",JSON.stringify(products));
-    renderStore(); renderAdmin();
+    renderStore(); renderAdminProducts();
     toast("Produk dihapus!");
   }
   function order(n){ toast("Order "+n+" dibuat!"); }
+  renderStore(); renderAdminProducts();
 
-  // Tickets
+  // TICKETS
   let tickets=JSON.parse(localStorage.getItem("tickets"))||[];
   function renderTickets(){
     let list=document.getElementById("ticketList");
     list.innerHTML="";
     tickets.forEach((t,i)=>{
       list.innerHTML+=`
-        <div class="ticket">
+        <div class="ticket-box">
           <b>${t.user}</b> (${t.email})<br>
           Kategori: ${t.cat}<br>
-          ${t.desc}<br>
-          <span class="status">Status: ${t.status}</span><br>
-          <button onclick="replyTicket(${i},'user')">Balas</button>
+          <div class="chat" id="chat${i}">
+            ${t.chat.map(c=>`<div class="bubble ${c.from}">${c.msg}</div>`).join('')}
+          </div>
+          <span class="status">Status: ${t.status}</span>
         </div>`;
     });
   }
-  renderTickets();
-
   function renderAdminTickets(){
     let list=document.getElementById("adminTicketList");
     list.innerHTML="";
     tickets.forEach((t,i)=>{
-      let chat=t.chat.map(m=>`<div class="msg ${m.from}"><b>${m.from}:</b> ${m.text}</div>`).join("");
       list.innerHTML+=`
-        <div class="ticket">
-          <b>${t.user}</b> - ${t.cat} [${t.status}]<br>
-          <div class="chat-box">${chat}</div>
-          <input type="text" id="reply${i}" placeholder="Balas...">
-          <button onclick="sendReply(${i})">Kirim</button>
-          <button onclick="setStatus(${i},'Closed')">Tutup</button>
-          <button onclick="deleteTicket(${i})">Hapus</button>
+        <div class="ticket-box">
+          <b>${t.user}</b> (${t.email}) - ${t.cat}<br>
+          <div class="chat" id="aChat${i}">
+            ${t.chat.map(c=>`<div class="bubble ${c.from}">${c.msg}</div>`).join('')}
+          </div>
+          <div class="chat-input">
+            <input type="text" id="reply${i}" placeholder="Balas...">
+            <button onclick="replyTicket(${i})">Kirim</button>
+          </div>
         </div>`;
     });
   }
-
   function openTicketModal(){ document.getElementById("ticketModal").style.display="flex"; }
   function closeTicketModal(){ document.getElementById("ticketModal").style.display="none"; }
-
   function submitTicket(){
     let u=document.getElementById('tUser').value;
     let e=document.getElementById('tEmail').value;
     let c=document.getElementById('tCat').value;
     let d=document.getElementById('tDesc').value;
     if(u&&e&&d){
-      tickets.push({user:u,email:e,cat:c,desc:d,status:"Open",chat:[{from:"user",text:d}]});
+      tickets.push({user:u,email:e,cat:c,desc:d,status:"Open",chat:[{from:"user",msg:d}]});
       localStorage.setItem("tickets",JSON.stringify(tickets));
-      renderTickets(); toast("Ticket terkirim!");
-      closeTicketModal();
+      renderTickets(); renderAdminTickets();
+      toast("Ticket terkirim!"); closeTicketModal();
     } else toast("Isi semua field!");
   }
-
-  function replyTicket(i,from){
-    let msg=prompt("Masukkan balasan:");
-    if(msg){
-      tickets[i].chat.push({from:from,text:msg});
-      localStorage.setItem("tickets",JSON.stringify(tickets));
-      renderTickets(); renderAdminTickets();
-    }
-  }
-  function sendReply(i){
+  function replyTicket(i){
     let msg=document.getElementById("reply"+i).value;
     if(msg){
-      tickets[i].chat.push({from:"admin",text:msg});
+      tickets[i].chat.push({from:"admin",msg:msg});
       localStorage.setItem("tickets",JSON.stringify(tickets));
       renderTickets(); renderAdminTickets();
+      toast("Balasan dikirim!");
     }
   }
+  renderTickets(); renderAdminTickets();
 
-  function setStatus(i,s){ tickets[i].status=s; localStorage.setItem("tickets",JSON.stringify(tickets)); renderTickets(); renderAdminTickets(); }
-  function deleteTicket(i){ tickets.splice(i,1); localStorage.setItem("tickets",JSON.stringify(tickets)); renderTickets(); renderAdminTickets(); toast("Ticket dihapus!"); }
-
-  // Admin Login
-  function loginAdmin(){
-    let u=document.getElementById("adminUser").value;
-    let p=document.getElementById("adminPass").value;
-    if(u===ADMIN_USER && p===ADMIN_PASS){
-      adminLogged=true;
+  // ADMIN LOGIN
+  function adminLogin(){
+    let u=document.getElementById("aUser").value;
+    let p=document.getElementById("aPass").value;
+    if(u=="admin"&&p=="nebula123"){
       showPage("adminPanel");
-      renderAdmin();
       toast("Login sukses!");
-    } else toast("Login gagal!");
+    } else { toast("Login gagal!"); }
   }
 </script>
 </body>
