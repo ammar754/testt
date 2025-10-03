@@ -6,197 +6,241 @@
   <title>Nebula Hardcore Store</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0; padding: 0;
-      background: linear-gradient(135deg, #0a0a0f, #1a1a2a);
-      color: #fff;
-      text-align: center;
+      margin:0; font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#0a0a0f,#1a1a2a);
+      color:#fff; display:flex; height:100vh; overflow:hidden;
     }
-    header {
-      padding: 25px;
-      background: linear-gradient(90deg,#6e00ff,#00c3ff);
-      font-size: 30px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.5);
+    /* Sidebar */
+    .sidebar {
+      width:220px; background:#111; padding:20px;
+      display:flex; flex-direction:column;
     }
+    .sidebar h2 { margin:0 0 20px; text-align:center; color:#6e00ff; }
+    .sidebar a {
+      padding:12px; margin:6px 0;
+      background:rgba(255,255,255,0.05);
+      border-radius:8px; cursor:pointer;
+      transition:.3s; text-decoration:none; color:#fff;
+    }
+    .sidebar a:hover { background:rgba(255,255,255,0.15); }
+    /* Content */
+    .content { flex:1; padding:20px; overflow-y:auto; }
+    .page { display:none; }
+    .page.active { display:block; }
+    /* Store */
     .store {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      padding: 30px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:20px;
     }
     .card {
-      background: rgba(21,21,34,.85);
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 0 15px rgba(0,0,0,.5);
-      transition: transform .3s, box-shadow .3s;
+      background:rgba(255,255,255,0.05);
+      border-radius:15px;
+      padding:20px;
+      backdrop-filter:blur(6px);
+      transition:.3s;
     }
-    .card:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0,200,255,.6); }
-    .price { color: #00e0ff; font-size: 20px; margin: 10px 0; font-weight: bold; }
+    .card:hover { transform:scale(1.05); }
+    .price { color:#00e0ff; font-size:18px; margin:10px 0; }
     button {
-      padding: 10px 20px;
-      border: none; border-radius: 10px;
-      background: linear-gradient(90deg,#6e00ff,#00c3ff);
-      color: #fff; cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
+      padding:10px 16px; border:none; border-radius:8px;
+      background:linear-gradient(90deg,#6e00ff,#00c3ff);
+      color:#fff; font-weight:bold; cursor:pointer; transition:.3s;
     }
-    button:hover { opacity: 0.9; box-shadow: 0 0 12px #00c3ff; }
-
-    /* Modal base */
-    .modal {
-      background: rgba(20,20,30,0.95);
-      backdrop-filter: blur(8px);
-      padding: 20px;
-      border-radius: 12px;
-      width: 350px;
-      margin: 50px auto;
-      box-shadow: 0 0 25px rgba(0,0,0,.6);
-      animation: fadeIn .4s;
-    }
-    @keyframes fadeIn { from{opacity:0; transform:scale(0.9);} to{opacity:1; transform:scale(1);} }
-    input, textarea, select {
-      width: 90%;
-      margin: 8px 0;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-      background: #222;
-      color: #fff;
-    }
-    textarea { resize: none; height: 100px; }
+    button:hover { opacity:.85; }
+    /* Ticket */
     .ticket {
-      background: #1a1a2a;
-      margin: 12px auto;
-      padding: 12px;
-      border-radius: 8px;
-      text-align: left;
-      box-shadow: 0 0 10px rgba(0,0,0,.4);
+      background:rgba(255,255,255,0.05);
+      padding:12px; border-radius:10px; margin:10px 0;
     }
-    .closeBtn {
-      float:right; cursor:pointer; color:#aaa; font-size:18px;
+    .ticket .status { font-size:12px; color:#0ff; }
+    /* Modal */
+    .modal {
+      position:fixed; top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,0.7); display:flex;
+      align-items:center; justify-content:center; display:none;
     }
-    .closeBtn:hover { color:#fff; }
-
-    /* Category colors */
-    .rank { border-left: 5px solid #00c3ff; }
-    .pay { border-left: 5px solid #00ff80; }
-    .other { border-left: 5px solid #ffaa00; }
+    .modal-content {
+      background:#151522; padding:20px; border-radius:12px;
+      width:320px; max-width:90%;
+    }
+    input, textarea, select {
+      width:100%; margin:8px 0; padding:10px;
+      border-radius:8px; border:none; outline:none;
+    }
+    textarea { resize:none; height:80px; }
+    /* Toast */
+    .toast {
+      position:fixed; bottom:20px; right:20px;
+      background:#222; padding:12px 20px; border-radius:8px;
+      color:#fff; opacity:0; transition:.5s;
+    }
+    .toast.show { opacity:1; }
   </style>
 </head>
 <body>
-  <header>Nebula Hardcore Store</header>
-
-  <!-- Produk Store -->
-  <section class="store" id="store">
-    <div class="card"><h3>Voidling</h3><p class="price">Rp15.000</p><button>Beli</button></div>
-    <div class="card"><h3>Phantom</h3><p class="price">Rp30.000</p><button>Beli</button></div>
-    <div class="card"><h3>Warlord</h3><p class="price">Rp60.000</p><button>Beli</button></div>
-    <div class="card"><h3>Overseer</h3><p class="price">Rp90.000</p><button>Beli</button></div>
-    <div class="card"><h3>Eternal</h3><p class="price">Rp100.000</p><button>Beli</button></div>
-    <div class="card"><h3>Titan</h3><p class="price">Rp130.000</p><button>Beli</button></div>
-  </section>
-
-  <br>
-  <button onclick="showLogin()">Login Admin</button>
-  <button onclick="showTicket()">Buat Ticket</button>
-
-  <!-- Login Box -->
-  <div id="loginBox" class="modal" style="display:none;">
-    <span class="closeBtn" onclick="this.parentElement.style.display='none'">✖</span>
-    <h2>Admin Login</h2>
-    <input type="text" id="user" placeholder="Username">
-    <input type="password" id="pass" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <p style="font-size:12px;">Default: <b>admin / nebula123</b></p>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Nebula Store</h2>
+    <a onclick="showPage('store')">🛒 Store</a>
+    <a onclick="showPage('tickets')">🎟 Tickets</a>
+    <a onclick="showPage('admin')">⚙️ Admin</a>
   </div>
 
-  <!-- Admin Panel -->
-  <div id="adminPanel" style="display:none;">
-    <h2>Admin Panel</h2>
-    <div>
-      <input type="text" id="newProduct" placeholder="Nama Produk">
-      <input type="text" id="newPrice" placeholder="Harga">
-      <button onclick="addProduct()">Tambah Produk</button>
+  <!-- Content -->
+  <div class="content">
+    <!-- Store -->
+    <section id="store" class="page active">
+      <h2>Store Rank</h2>
+      <div class="store" id="storeList"></div>
+    </section>
+
+    <!-- Tickets -->
+    <section id="tickets" class="page">
+      <h2>Support Tickets</h2>
+      <button onclick="openTicketModal()">+ Buat Ticket</button>
+      <div id="ticketList"></div>
+    </section>
+
+    <!-- Admin -->
+    <section id="admin" class="page">
+      <h2>Admin Panel</h2>
+      <div>
+        <input type="text" id="pName" placeholder="Nama Produk">
+        <input type="number" id="pPrice" placeholder="Harga">
+        <button onclick="addProduct()">Tambah Produk</button>
+      </div>
+      <h3>Daftar Produk</h3>
+      <div id="adminProductList"></div>
+    </section>
+  </div>
+
+  <!-- Ticket Modal -->
+  <div class="modal" id="ticketModal">
+    <div class="modal-content">
+      <h3>Buat Ticket</h3>
+      <input type="text" id="tUser" placeholder="Username">
+      <input type="email" id="tEmail" placeholder="Email">
+      <select id="tCat">
+        <option>Rank</option>
+        <option>Pembayaran</option>
+        <option>Lainnya</option>
+      </select>
+      <textarea id="tDesc" placeholder="Deskripsi masalah..."></textarea>
+      <button onclick="submitTicket()">Kirim</button>
+      <button onclick="closeTicketModal()">Batal</button>
     </div>
-    <h3>Daftar Produk</h3>
-    <div id="productList"></div>
-    <h3>Ticket Masuk</h3>
-    <div id="ticketList"></div>
   </div>
 
-  <!-- Ticket Form -->
-  <div id="ticketBox" class="modal" style="display:none;">
-    <span class="closeBtn" onclick="this.parentElement.style.display='none'">✖</span>
-    <h2>Buat Ticket</h2>
-    <input type="text" id="tUser" placeholder="Username">
-    <input type="email" id="tEmail" placeholder="Email">
-    <select id="tCat">
-      <option>Rank</option>
-      <option>Pembayaran</option>
-      <option>Lainnya</option>
-    </select>
-    <textarea id="tDesc" placeholder="Deskripsi masalah..."></textarea>
-    <button onclick="submitTicket()">Kirim Ticket</button>
-  </div>
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
 <script>
-  // ADMIN LOGIN
-  function showLogin(){ document.getElementById('loginBox').style.display='block'; }
-  function login(){
-    let u=document.getElementById('user').value;
-    let p=document.getElementById('pass').value;
-    if(u=="admin" && p=="nebula123"){
-      document.getElementById('loginBox').style.display='none';
-      document.getElementById('adminPanel').style.display='block';
-    } else { alert("Login gagal!"); }
+  // Navigation
+  function showPage(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
   }
 
-  // PRODUCT SYSTEM
+  // Toast
+  function toast(msg){
+    let t=document.getElementById("toast");
+    t.textContent=msg;
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"),3000);
+  }
+
+  // Products
+  let products=JSON.parse(localStorage.getItem("products"))||[
+    {name:"Voidling",price:15000},
+    {name:"Phantom",price:30000},
+    {name:"Warlord",price:60000},
+    {name:"Overseer",price:90000},
+    {name:"Eternal",price:100000},
+    {name:"Titan",price:130000}
+  ];
+
+  function renderStore(){
+    let store=document.getElementById("storeList");
+    store.innerHTML="";
+    products.forEach((p,i)=>{
+      store.innerHTML+=`
+      <div class="card">
+        <h3>${p.name}</h3>
+        <p class="price">Rp${p.price.toLocaleString()}</p>
+        <button onclick="order('${p.name}')">Beli</button>
+      </div>`;
+    });
+  }
+  renderStore();
+
+  function renderAdmin(){
+    let list=document.getElementById("adminProductList");
+    list.innerHTML="";
+    products.forEach((p,i)=>{
+      list.innerHTML+=`
+        <div class="ticket">
+          <b>${p.name}</b> - Rp${p.price.toLocaleString()}
+          <button onclick="deleteProduct(${i})">Hapus</button>
+        </div>`;
+    });
+  }
+  renderAdmin();
+
   function addProduct(){
-    let name=document.getElementById('newProduct').value;
-    let price=document.getElementById('newPrice').value;
-    if(name && price){
-      let div=document.createElement("div");
-      div.className="ticket";
-      div.innerHTML=`<b>${name}</b> - Rp${price} 
-        <button onclick="editProduct(this)">Edit</button>
-        <button onclick="this.parentElement.remove()">Hapus</button>`;
-      document.getElementById("productList").appendChild(div);
+    let n=document.getElementById("pName").value;
+    let pr=parseInt(document.getElementById("pPrice").value);
+    if(n&&pr){
+      products.push({name:n,price:pr});
+      localStorage.setItem("products",JSON.stringify(products));
+      renderStore(); renderAdmin();
+      toast("Produk ditambah!");
     }
   }
-  function editProduct(btn){
-    let parent=btn.parentElement;
-    let oldText=parent.innerText.split(" - Rp");
-    let name=prompt("Nama baru:", oldText[0]);
-    let price=prompt("Harga baru:", oldText[1].replace(/[^0-9]/g,""));
-    if(name && price){
-      parent.innerHTML=`<b>${name}</b> - Rp${price} 
-        <button onclick="editProduct(this)">Edit</button>
-        <button onclick="this.parentElement.remove()">Hapus</button>`;
-    }
+  function deleteProduct(i){
+    products.splice(i,1);
+    localStorage.setItem("products",JSON.stringify(products));
+    renderStore(); renderAdmin();
+    toast("Produk dihapus!");
   }
+  function order(n){ toast("Order "+n+" dibuat!"); }
 
-  // TICKET SYSTEM
-  function showTicket(){ document.getElementById('ticketBox').style.display='block'; }
+  // Tickets
+  let tickets=JSON.parse(localStorage.getItem("tickets"))||[];
+  function renderTickets(){
+    let list=document.getElementById("ticketList");
+    list.innerHTML="";
+    tickets.forEach((t,i)=>{
+      list.innerHTML+=`
+        <div class="ticket">
+          <b>${t.user}</b> (${t.email})<br>
+          Kategori: ${t.cat}<br>
+          ${t.desc}<br>
+          <span class="status">Status: ${t.status}</span><br>
+          <button onclick="setStatus(${i},'Closed')">Tutup</button>
+          <button onclick="deleteTicket(${i})">Hapus</button>
+        </div>`;
+    });
+  }
+  renderTickets();
+
+  function openTicketModal(){ document.getElementById("ticketModal").style.display="flex"; }
+  function closeTicketModal(){ document.getElementById("ticketModal").style.display="none"; }
+
   function submitTicket(){
     let u=document.getElementById('tUser').value;
     let e=document.getElementById('tEmail').value;
     let c=document.getElementById('tCat').value;
     let d=document.getElementById('tDesc').value;
-    if(u && e && d){
-      let div=document.createElement("div");
-      div.className="ticket "+(c=="Rank"?"rank":c=="Pembayaran"?"pay":"other");
-      div.innerHTML=`<b>${u}</b> (${e})<br>
-        <span style="font-weight:bold;">[${c}]</span><br>${d}`;
-      document.getElementById("ticketList").appendChild(div);
-      alert("Ticket berhasil dikirim!");
-      document.getElementById('ticketBox').style.display='none';
-    } else { alert("Isi semua field!"); }
+    if(u&&e&&d){
+      tickets.push({user:u,email:e,cat:c,desc:d,status:"Open"});
+      localStorage.setItem("tickets",JSON.stringify(tickets));
+      renderTickets(); toast("Ticket terkirim!");
+      closeTicketModal();
+    } else toast("Isi semua field!");
   }
+  function setStatus(i,s){ tickets[i].status=s; localStorage.setItem("tickets",JSON.stringify(tickets)); renderTickets(); }
+  function deleteTicket(i){ tickets.splice(i,1); localStorage.setItem("tickets",JSON.stringify(tickets)); renderTickets(); toast("Ticket dihapus!"); }
 </script>
 </body>
 </html>
